@@ -283,7 +283,114 @@ def auth_register_done(request):
 #--------------------------------------------END---------------------------------------------#
 
 
-#--------------------------------------Management Pages--------------------------------------#
+#--------------------------------------School Management Pages--------------------------------------#
+class SchoolManage(View):
+    '''Render class-manage template'''
+    def get(self, request):
+        key = request.user.is_authenticated & request.user.is_superuser
+        # print(request.user.is_authenticated)
+        if request.user.is_authenticated == False:
+            content = {
+                'err_code': '403',
+                'err_message': _('没有权限'),
+            }
+            return render(request, 'error.html', context=content)
+        else:
+            identity = request.user.identity()
+            if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
+                # XXX(Seddon Shen): 使用反向查询_set()去找学生 需注意全部字段小写
+                if request.user.is_superuser:
+                    class_list = Classroom.objects.all()
+                else:
+                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
+
+                for cls in class_list:
+                    print(cls)
+                    print(cls.studentlist_set.all().count(  ))
+                content = {
+                    'class_list': class_list,
+                }
+                return render(request, 'user/class-manage.html', context=content)
+            else:
+                content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+                return render(request, 'error.html', context=content)
+
+
+class SchoolDetails(View):
+    '''Render class-details template'''
+
+    def get(self, request, class_id):
+        if request.user.is_authenticated:
+            classroom = Classroom.objects.get(class_id=class_id)
+            exam_list = classroom.exam_set.all()
+            exer_list = classroom.exercise_set.all()
+            # print(classroom.exam_set.all())
+            # print(classroom.exercise_set.all())
+            # print(classroom.student_set.all())
+            # for student in classroom.student_set.all():
+            #     print(student.examanswerrec_set.all())
+            # print(ExamAnswerRec.objects.filter(student__in=classroom.student_set.all()))
+            exam_detail = ExamAnswerRec.objects.filter(student__in=classroom.student_set.all())
+            exer_detail = ExerAnswerRec.objects.filter(student__in=classroom.student_set.all())
+            for exam in exam_list:
+                exam_answer_detail = ExamQuesAnswerRec.objects.filter(exam__in=exam_detail.filter(exam=exam))
+                exam_infoset = exam_detail.filter(exam=exam)
+                exam.start_cnt=exam_infoset.count()
+                exam.finish_cnt=exam_infoset.filter(status=True).count()
+                if classroom.student_set.count() == 0:
+                    exam.per_finish_rate = 0
+                else:
+                    per_finish_rate = (exam.finish_cnt / classroom.student_set.count()) * 100
+                    exam.per_finish_rate = round(per_finish_rate,2)
+
+                if exam_answer_detail.count() == 0:
+                    exam.per_acrate = 0
+                else:
+                    per_acrate = (exam_answer_detail.filter(ans_status=0).count() / exam_answer_detail.count()) * 100
+                    exam.per_acrate = round(per_acrate,2)
+            for exer in exer_list:
+                exer_answer_detail = ExerQuesAnswerRec.objects.filter(exer__in=exer_detail.filter(exer=exer))
+                exer_infoset = exer_detail.filter(exer=exer)
+                exer.start_cnt=exer_infoset.count()
+                exer.finish_cnt=exer_infoset.filter(status=True).count()
+                if classroom.student_set.count() == 0:
+                    exer.per_finish_rate = 0
+                else:
+                    per_finish_rate = (exer.finish_cnt / classroom.student_set.count()) * 100
+                    exer.per_finish_rate = round(per_finish_rate,2)
+
+                if exer_answer_detail.count() == 0:
+                    exer.per_acrate = 0
+                else:
+                    per_acrate = (exer_answer_detail.filter(ans_status=0).count() / exer_answer_detail.count()) * 100
+                    exer.per_acrate = round(per_acrate,2)
+
+            if request.user.is_superuser:
+                content = {
+                    'classroom': classroom,
+                    'exam_list' : exam_list,
+                    'exer_list' : exer_list
+                }
+                return render(request, 'user/class-details.html', context=content)
+            else:
+                if request.user.identity() == 'teacher_student' or request.user.identity() == 'teacher':
+                    if request.user.teacher == classroom.teacher:
+                        content = {
+                            'classroom' : classroom,
+                            'exam_list' : exam_list,
+                            'exer_list' : exer_list
+                        }
+                    return render(request, 'user/class-details.html', context=content)
+        content = {
+            'err_code': '403',
+            'err_message': _('没有权限'),
+        }
+        return render(request, 'error.html', context=content)
+
+#--------------------------------------Class Management Pages--------------------------------------#
 class ClassManage(View):
     '''Render class-manage template'''
     def get(self, request):
@@ -390,7 +497,152 @@ class ClassDetails(View):
         }
         return render(request, 'error.html', context=content)
 
-class UserInfo(View):
+#--------------------------------------Student Management Pages--------------------------------------#
+class StudentManage(View):
+    '''Render class-manage template'''
+    def get(self, request):
+        key = request.user.is_authenticated & request.user.is_superuser
+        # print(request.user.is_authenticated)
+        if request.user.is_authenticated == False:
+            content = {
+                'err_code': '403',
+                'err_message': _('没有权限'),
+            }
+            return render(request, 'error.html', context=content)
+        else:
+            identity = request.user.identity()
+            if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
+                # XXX(Seddon Shen): 使用反向查询_set()去找学生 需注意全部字段小写
+                if request.user.is_superuser:
+                    class_list = Classroom.objects.all()
+                else:
+                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
+
+                for cls in class_list:
+                    print(cls)
+                    print(cls.studentlist_set.all().count(  ))
+                content = {
+                    'class_list': class_list,
+                }
+                return render(request, 'user/class-manage.html', context=content)
+            else:
+                content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+                return render(request, 'error.html', context=content)
+
+
+class StudentDetails(View):
+    '''Render class-details template'''
+
+    def get(self, request, class_id):
+        if request.user.is_authenticated:
+            classroom = Classroom.objects.get(class_id=class_id)
+            exam_list = classroom.exam_set.all()
+            exer_list = classroom.exercise_set.all()
+            # print(classroom.exam_set.all())
+            # print(classroom.exercise_set.all())
+            # print(classroom.student_set.all())
+            # for student in classroom.student_set.all():
+            #     print(student.examanswerrec_set.all())
+            # print(ExamAnswerRec.objects.filter(student__in=classroom.student_set.all()))
+            exam_detail = ExamAnswerRec.objects.filter(student__in=classroom.student_set.all())
+            exer_detail = ExerAnswerRec.objects.filter(student__in=classroom.student_set.all())
+            for exam in exam_list:
+                exam_answer_detail = ExamQuesAnswerRec.objects.filter(exam__in=exam_detail.filter(exam=exam))
+                exam_infoset = exam_detail.filter(exam=exam)
+                exam.start_cnt=exam_infoset.count()
+                exam.finish_cnt=exam_infoset.filter(status=True).count()
+                if classroom.student_set.count() == 0:
+                    exam.per_finish_rate = 0
+                else:
+                    per_finish_rate = (exam.finish_cnt / classroom.student_set.count()) * 100
+                    exam.per_finish_rate = round(per_finish_rate,2)
+
+                if exam_answer_detail.count() == 0:
+                    exam.per_acrate = 0
+                else:
+                    per_acrate = (exam_answer_detail.filter(ans_status=0).count() / exam_answer_detail.count()) * 100
+                    exam.per_acrate = round(per_acrate,2)
+            for exer in exer_list:
+                exer_answer_detail = ExerQuesAnswerRec.objects.filter(exer__in=exer_detail.filter(exer=exer))
+                exer_infoset = exer_detail.filter(exer=exer)
+                exer.start_cnt=exer_infoset.count()
+                exer.finish_cnt=exer_infoset.filter(status=True).count()
+                if classroom.student_set.count() == 0:
+                    exer.per_finish_rate = 0
+                else:
+                    per_finish_rate = (exer.finish_cnt / classroom.student_set.count()) * 100
+                    exer.per_finish_rate = round(per_finish_rate,2)
+
+                if exer_answer_detail.count() == 0:
+                    exer.per_acrate = 0
+                else:
+                    per_acrate = (exer_answer_detail.filter(ans_status=0).count() / exer_answer_detail.count()) * 100
+                    exer.per_acrate = round(per_acrate,2)
+
+            if request.user.is_superuser:
+                content = {
+                    'classroom': classroom,
+                    'exam_list' : exam_list,
+                    'exer_list' : exer_list
+                }
+                return render(request, 'user/class-details.html', context=content)
+            else:
+                if request.user.identity() == 'teacher_student' or request.user.identity() == 'teacher':
+                    if request.user.teacher == classroom.teacher:
+                        content = {
+                            'classroom' : classroom,
+                            'exam_list' : exam_list,
+                            'exer_list' : exer_list
+                        }
+                    return render(request, 'user/class-details.html', context=content)
+        content = {
+            'err_code': '403',
+            'err_message': _('没有权限'),
+        }
+        return render(request, 'error.html', context=content)
+
+#--------------------------------------Class Management Pages--------------------------------------#
+class UserManage(View):
+    '''Render class-manage template'''
+    def get(self, request):
+        key = request.user.is_authenticated & request.user.is_superuser
+        # print(request.user.is_authenticated)
+        if request.user.is_authenticated == False:
+            content = {
+                'err_code': '403',
+                'err_message': _('没有权限'),
+            }
+            return render(request, 'error.html', context=content)
+        else:
+            identity = request.user.identity()
+            if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
+                # XXX(Seddon Shen): 使用反向查询_set()去找学生 需注意全部字段小写
+                if request.user.is_superuser:
+                    class_list = Classroom.objects.all()
+                else:
+                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
+
+                for cls in class_list:
+                    print(cls)
+                    print(cls.studentlist_set.all().count(  ))
+                content = {
+                    'class_list': class_list,
+                }
+                return render(request, 'user/class-manage.html', context=content)
+            else:
+                content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+                return render(request, 'error.html', context=content)
+
+
+
+
+class UserDetails(View):
     '''Render user-info template'''
 
     RBF = '# TODO(Steve X): REMOVE BEFORE FLIGHT'
