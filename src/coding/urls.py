@@ -46,7 +46,6 @@ urlpatterns = [
 
     # Papers-manage Page
     path('papers-manage/', views.papers_manage, name='papers-manage'),
-    
 
     # # APIs
     # path('api/test/', apis.test_api, name='api-test'),

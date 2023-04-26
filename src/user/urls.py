@@ -38,9 +38,24 @@ urlpatterns = [
     path('auth-register-done/', views.auth_register_done, name='auth-register-done'),
     path('auth-status/', views.auth_status, name='auth-status'),
 
-    # Management Pages
+    # User-management Pages
+    path('user-manage/', views.UserDetails.as_view(), name='user-manage'),
+    path('user-info/', views.UserDetails.as_view(), name='user-info'),
+
+    # School-management Pages
+    path('school-manage/', views.SchoolManage.as_view(), name='school-manage'),
+    path('school-details/<school_id>/', views.SchoolDetails.as_view(), name='school-details'),
+
+
+    # Class-management Pages
     path('class-manage/', views.ClassManage.as_view(), name='class-manage'),
     path('class-details/<class_id>/', views.ClassDetails.as_view(), name='class-details'),
     path('class-details/<class_id>/<event_type>/<event_id>', views.ClassEventDetails.as_view(), name='class-event'),
-    path('user-info/', views.UserInfo.as_view(), name='user-info'),
+    
+    # Student-management Pages
+    path('student-manage/', views.StudentManage.as_view(), name='student-manage'),
+    path('student-details/<student_id>/', views.StudentDetails.as_view(), name='student-details'),  
+
+
+
 ]
