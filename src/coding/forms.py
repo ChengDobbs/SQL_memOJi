@@ -62,7 +62,7 @@ class QuesSetForm(ModelForm):
             'initiator': wid.Select(attrs={'class': 'select2'}),
         }
 
-
+# “创建题目”填充表单
 class QuestionForm(ModelForm):
     '''For coding/questions-manage.html'''
 
@@ -107,7 +107,7 @@ class QuestionForm(ModelForm):
 class CustomDateInput(DateTimeInput):
     input_type = 'datetime'
 
-
+# “创建试卷”填充表单
 class PaperForm(ModelForm):
     '''For coding/questions-manage.html'''
 
@@ -144,7 +144,7 @@ class PaperForm(ModelForm):
             'paper_desc': wid.Textarea(attrs={'rows': 3}),
         }
 
-
+# “发起考试”填充表单
 class ExamForm(ModelForm):
     '''For coding/exams-manage.html'''
 
@@ -178,28 +178,37 @@ class ExamForm(ModelForm):
             # 'xxx': {'required': _("xxx不能为空"), },
         }
 
-        # FIXME(Steve X): datetime picker above modal
+        # FIXME(Steve X): datetime picker above modal CHANGE(Cheng):datepicker.dropdown-menu
         widgets = {
             'paper': wid.Select(attrs={'class': 'select2'}),
             'classroom': wid.SelectMultiple(attrs={'class': 'select2'}),
             'desc': wid.Textarea(attrs={'rows': 3}),
+            'start_time': wid.DateTimeInput(attrs={
+                'type': 'datetime',
+                'data-provide': 'datepicker',
+            }),
+            'end_time': wid.DateTimeInput(attrs={
+                'type': 'datetime',
+                'data-provide': 'datepicker',
+            }),
+
             # 'start_time': CustomDateInput(attrs={
-            #     # 'type': 'datetime',
-            #     # 'data-provide': 'datepicker',
-            #     # 'data-date-format': 'yyyy-mm-dd hh:MM:ss',
+            #     'type': 'datetime',
+            #     'data-provide': 'datepicker',
+            #     'data-date-format': 'yyyy-mm-dd hh:MM:ss',
             #     'placeholder': 'yyyy-mm-dd hh:MM:ss',
             #     'data-date-autoclose': 'true',
             # }),
             # 'end_time': CustomDateInput(attrs={
-            #     # 'type': 'datetime',
-            #     # 'data-provide': 'datepicker',
-            #     # 'data-date-format': 'yyyy-mm-dd hh:MM:ss',
+            #     'type': 'datetime',
+            #     'data-provide': 'datepicker',
+            #     'data-date-format': 'yyyy-mm-dd hh:MM:ss',
             #     'placeholder': 'yyyy-mm-dd hh:MM:ss',
             #     'data-date-autoclose': 'true',
             # }),
         }
 
-
+# “发起练习”填充表单
 class ExerciseForm(ModelForm):
     '''For coding/exams-manage.html'''
 
@@ -220,8 +229,11 @@ class ExerciseForm(ModelForm):
         model = coding.models.Exercise
 
         fields = [
+
             'exer_name',
             'paper',
+            'start_time',
+            'end_time',
             'desc',
             'active',
             'classroom',
@@ -236,4 +248,27 @@ class ExerciseForm(ModelForm):
             'paper': wid.Select(attrs={'class': 'select2'}),
             'classroom': wid.SelectMultiple(attrs={'class': 'select2'}),
             'desc': wid.Textarea(attrs={'rows': 3}),
+            'start_time': wid.DateTimeInput(attrs={
+                'type': 'datetime',
+                'data-provide': 'datepicker',
+            }),
+            'end_time': wid.DateTimeInput(attrs={
+                'type': 'datetime',
+                'data-provide': 'datepicker',
+            }),
+
+            # 'start_time': CustomDateInput(attrs={
+            #     'type': 'datetime',
+            #     'data-provide': 'datepicker',
+            #     'data-date-format': 'yyyy-mm-dd hh:MM:ss',
+            #     'placeholder': 'yyyy-mm-dd hh:MM:ss',
+            #     'data-date-autoclose': 'true',
+            # }),
+            # 'end_time': CustomDateInput(attrs={
+            #     'type': 'datetime',
+            #     'data-provide': 'datepicker',
+            #     'data-date-format': 'yyyy-mm-dd hh:MM:ss',
+            #     'placeholder': 'yyyy-mm-dd hh:MM:ss',
+            #     'data-date-autoclose': 'true',
+            # }),
         }

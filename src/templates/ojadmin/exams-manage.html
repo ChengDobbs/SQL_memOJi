@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% block title %}练习 & 考试管理{% endblock title %}
+{% block page_title %}练习 & 考试管理{% endblock page_title %}
+
+<!-- Breadcrumb -->
+{% block breadcrumb %}
+    <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item"><a href="javascript: void(0);">个人中心</a></li>
+            <li class="breadcrumb-item active">练习 & 考试管理</li>
+        </ol>
+    </div>
+{% endblock breadcrumb %}
+
+<!-- CSS -->
+{% block css %}
+    <!-- Form Advanced Styles -->
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" type="text/css" />
+
+{% endblock css %}
+
+<!-- Main Content -->
+{% block main %}
+    <h1>下一场考试</h1>
+    <div class="row">
+        <div class="col-8">
+            <div class="card task-box">
+                <div class="progress progress-sm animated-progess" style="height: 3px;">
+                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="card-body">
+
+                    <div class="float-right ml-2">
+                        <div>
+                            开始: {{ next_exam.start_time }} <br> 结束: {{ next_exam.end_time }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <a href="#" class="">#EXAM{{ next_exam.exam_id }}</a>
+                    </div>
+                    <div>
+                        <h5 class="font-size-16"><a href="javascript: void(0);" class="text-dark">{{ next_exam.exam_name }}</a></h5>
+                        <p class="mb-4">{{ next_exam.desc }}</p>
+                    </div>
+
+                    <div class="d-inline-flex team mb-0">
+                        <div class="mr-3 align-self-center">
+                            发起人 :
+                        </div>
+                        <div class="team-member">
+                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="Calvin Redrick">
+                                <img src="{% static 'images/users/avatar-3.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                            </a>
+                        </div>
+
+                        <div class="team-member">
+                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="David Martinez">
+                                <img src="{% static 'images/users/avatar-2.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="float-right"><a href="javascript: void(0);" class="btn btn-primary mt-1 waves-effect waves-light">编辑</a></div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card bg-danger text-white-50" data-toggle="modal" data-target='#exammodal'>
+                <a href="#">
+                    <div class="card-body" style="height: 100%;">
+                        <h5 class="mt-0 mb-4 text-white"><i class="mdi mdi-plus mr-1"></i> 发起考试</h5>
+                        <p class="card-text" style="color: #ffffff;">点击此处发起新的考试</p>
+                    </div>
+                </a>
+            </div>
+            <div class="card bg-primary text-white-50" data-toggle="modal" data-target="#exermodal">
+                <a href="#">
+                    <div class="card-body" style="height: 100%;">
+                        <h5 class="mt-0 mb-4 text-white"><i class="mdi mdi-plus mr-1"></i> 发起练习 </h5>
+                        <p class="card-text" style="color: #ffffff;">点击此处发起新的练习</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <!-- end row -->
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card-body">
+                <button type="button" class="btn btn-outline-danger waves-effect waves-light">
+                    <i class="ri-check-line align-middle mr-2"></i>
+                    <strong>考试</strong>
+                </button>
+            </div>
+            <!-- <div class="card"> -->
+                <div class="card-body border-bottom">
+
+                    <div id="todo-task" class="task-list">
+                        {% for exam in exams_list %}
+                            <div class="card task-box">
+                                <div class="progress progress-sm animated-progess" style="height: 3px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="float-right ml-2">
+                                        <div>
+                                            开始: {{ exam.start_time }} <br> 结束: {{ exam.end_time }}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <a href="#" class="">#EXAM{{ exam.exam_id }}</a>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-size-16"><a href="javascript: void(0);" class="text-dark">{{ exam.exam_name }}</a></h5>
+                                        <p class="mb-4">{{ exam.desc }}</p>
+                                    </div>
+
+                                    <div class="d-inline-flex team mb-0">
+                                        <div class="mr-3 align-self-center">
+                                            发起人 :
+                                        </div>
+                                        <div class="team-member">
+                                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="Calvin Redrick">
+                                                <img src="{% static 'images/users/avatar-3.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="team-member">
+                                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="David Martinez">
+                                                <img src="{% static 'images/users/avatar-2.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="float-right"><a href="javascript: void(0);" class="btn btn-primary mt-1 waves-effect waves-light">编辑</a></div>
+
+                                </div>
+                            </div>
+                            <!-- end task card -->
+                        {% endfor %}
+
+                    </div>
+                    
+                </div>
+            <!-- </div> -->
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card-body">
+                <button type="button" class="btn btn-outline-primary waves-effect waves-light">
+                    <i class="ri-check-line align-middle mr-2"></i>
+                    <strong>练习</strong>
+                </button>
+            </div>
+            <!-- <div class="card"> -->
+                <div class="card-body border-bottom">
+                    <div id="inprogress-task" class="task-list">
+
+                        {% for exer in exer_list %}
+                            <div class="card task-box">
+                                <div class="progress progress-sm animated-progess" style="height: 3px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="float-right ml-2">
+                                        <div>
+                                            {% comment %} 2021年4月17日 <br> 10:30-12:30 {% endcomment %}
+                                            发布于: {{ exer.publish_time }}
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <a href="#" class="">#EXER{{ exer.exer_id }}</a>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-size-16"><a href="javascript: void(0);" class="text-dark">{{ exer.exer_name }}</a></h5>
+                                        <p class="mb-4">{{ exer.desc }}</p>
+                                    </div>
+
+                                    <div class="d-inline-flex team mb-0">
+                                        <div class="mr-3 align-self-center">
+                                            发起人 :
+                                        </div>
+                                        <div class="team-member">
+                                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="Calvin Redrick">
+                                                <img src="{% static 'images/users/avatar-3.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="team-member">
+                                            <a href="javascript: void(0);" class="team-member d-inline-block" data-toggle="tooltip" data-placement="top" title="David Martinez">
+                                                <img src="{% static 'images/users/avatar-2.jpg' %}" class="rounded-circle avatar-xs" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="float-right"><a href="javascript: void(0);" class="btn btn-primary mt-1 waves-effect waves-light">编辑</a></div>
+
+                                </div>
+                            </div>
+                            <!-- end task card -->
+                        {% endfor %}
+
+                    </div>
+                    
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+    <!-- end row -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exammodal" tabindex="-1" role="dialog" aria-labelledby="exammodalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exammodalTitle">发起考试</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="needs-validation" action="{% url 'coding:exam-add' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for data in exam_form %}
+                                {% if data.name == 'desc' %}
+                                    <div class="form-group mb-4 col-12">
+                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                        <div>{{ data }}</div>
+                                    </div>
+                                {% else %}
+                                    <div class="form-group mb-4 col-6">
+                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                        <div>{{ data }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exermodal" tabindex="-1" role="dialog" aria-labelledby="exermodalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exermodalTitle">发起练习</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="needs-validation" action="{% url 'coding:exer-add' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for data in exer_form %}
+                                {% if data.name == 'desc' %}
+                                    <div class="form-group mb-4 col-12">
+                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                        <div>{{ data }}</div>
+                                    </div>
+                                {% else %}
+                                    <div class="form-group mb-4 col-6">
+                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                        <div>{{ data }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main %}
+
+<!-- JS -->
+{% block js %}
+    <!-- Form Advanced -->
+    <script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+    <!-- Custom Pages -->
+    <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+
+{% endblock js %}

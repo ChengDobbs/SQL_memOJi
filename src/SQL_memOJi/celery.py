@@ -18,7 +18,7 @@ app.conf.update(
     CELERYBEAT_SCHEDULE={
         'mark_paper': {
             'task': 'coding.tasks.mark_paper',
-            'schedule': timedelta(seconds=20), 
+            'schedule': timedelta(seconds=3), 
             'args': (),
         }
     }

@@ -51,15 +51,15 @@ INSTALLED_APPS = [
     # Custom apps
     'user',
     'coding',
+    # 'ojadmin',
     'iCalendar',
 
     # PIP lib
     'rest_framework',
-
-    # # Simpleui
-    # 'simpleui',
+    
     # For Excel Import
     'import_export',
+    
     # Django core
     'django.contrib.admin',
     'django.contrib.auth',
@@ -190,9 +190,9 @@ task_serializer = "json"
 # 结果序列化数据格式
 result_serializer = "json"
 # 可选：给某个任务限流
-# task_annotations = {'tasks.add': {'rate_limit': '10/s'}}
+task_annotations = {'tasks.add': {'rate_limit': '10/s'}}
 # 可选：给任务设置超时时间。超时立即中止worker
-task_time_limit = 10 * 2
+task_time_limit = 5
 # 可选：给任务设置软超时时间，超时抛出Exception
 # task_soft_time_limit = 10 * 60
 # 可选：设置任务调度器

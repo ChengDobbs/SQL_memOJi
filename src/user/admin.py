@@ -251,7 +251,7 @@ class StudentListAdmin(ImportExportModelAdmin):
         formats = (
             base_formats.XLSX,
         )
-        return [f for f in formats if f().can_export()]
+        return [f for f in formats if f().can_import()]
 
     resource_class = StudentListResource
     list_display = ['record_id','full_name','internal_id','classroom', 'join_code', 'join_status']

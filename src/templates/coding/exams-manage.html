@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}练习 & 考试管理{% endblock title %}
-{% block page_title %}练习 & 考试管理{% endblock page_title %}
+{% block title %}考练管理{% endblock title %}
+{% block page_title %}考练管理{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript: void(0);">个人中心</a></li>
-            <li class="breadcrumb-item active">练习 & 考试管理</li>
+            <li class="breadcrumb-item active">考练管理</li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -22,8 +22,8 @@
 
 <!-- Main Content -->
 {% block main %}
-    <h1>下一场考试</h1>
     <div class="row">
+        <!--
         <div class="col-8">
             <div class="card task-box">
                 <div class="progress progress-sm animated-progess" style="height: 3px;">
@@ -64,21 +64,21 @@
 
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="col-lg-4">
-            <div class="card bg-danger text-white-50" data-toggle="modal" data-target='#exammodal'>
+            <!--div class="card bg-danger text-white-50" data-toggle="modal" data-target='#exammodal'>
                 <a href="#">
                     <div class="card-body" style="height: 100%;">
                         <h5 class="mt-0 mb-4 text-white"><i class="mdi mdi-plus mr-1"></i> 发起考试</h5>
                         <p class="card-text" style="color: #ffffff;">点击此处发起新的考试</p>
                     </div>
                 </a>
-            </div>
-            <div class="card bg-primary text-white-50" data-toggle="modal" data-target="#exermodal">
+            </div-->
+            <div class="card bg-success text-white-50" data-toggle="modal" data-target="#exermodal">
                 <a href="#">
                     <div class="card-body" style="height: 100%;">
-                        <h5 class="mt-0 mb-4 text-white"><i class="mdi mdi-plus mr-1"></i> 发起练习 </h5>
-                        <p class="card-text" style="color: #ffffff;">点击此处发起新的练习</p>
+                        <h5 class="mt-0 mb-4 text-white"><i class="mdi mdi-plus mr-1"></i> 发起练习 / 考试</h5>
+                        <p class="card-text" style="color: #ffffff;">点击此处发起新的练习 / 考试</p>
                     </div>
                 </a>
             </div>
@@ -99,7 +99,7 @@
                 <div class="card-body border-bottom">
 
                     <div id="todo-task" class="task-list">
-                        {% for exam in exams_list %}
+                        {% for exam in exams_list reversed %}
                             <div class="card task-box">
                                 <div class="progress progress-sm animated-progess" style="height: 3px;">
                                     <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
@@ -159,7 +159,7 @@
                 <div class="card-body border-bottom">
                     <div id="inprogress-task" class="task-list">
 
-                        {% for exer in exer_list %}
+                        {% for exer in exer_list reversed %}
                             <div class="card task-box">
                                 <div class="progress progress-sm animated-progess" style="height: 3px;">
                                     <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
@@ -213,7 +213,7 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="exammodal" tabindex="-1" role="dialog" aria-labelledby="exammodalTitle" aria-hidden="true">
+    <!-- <div class="modal fade" id="exammodal" tabindex="-1" role="dialog" aria-labelledby="exammodalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -227,8 +227,14 @@
                         {% csrf_token %}
                         <div class="row">
                             {% for data in exam_form %}
-                                {% if data.name == 'desc' %}
+                                {% if data.name == 'desc' or data.name == 'classroom' %}
                                     <div class="form-group mb-4 col-12">
+                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                        <div>{{ data }}</div>
+                                    </div>
+                                    <!-- 同步样式加到时间分>
+                                {% elif data.name == 'start_time' or data.name == 'end_time' %}
+                                    <div class="form-group mb-4 col-6">
                                         <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
                                         <div>{{ data }}</div>
                                     </div>
@@ -244,19 +250,20 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                             <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                            
                         </div>
 
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="modal fade" id="exermodal" tabindex="-1" role="dialog" aria-labelledby="exermodalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exermodalTitle">发起练习</h5>
+                    <h5 class="modal-title" id="exermodalTitle">发起练习 / 考试</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -266,11 +273,17 @@
                         {% csrf_token %}
                         <div class="row">
                             {% for data in exer_form %}
-                                {% if data.name == 'desc' %}
+                                {% if data.name == 'desc' or data.name == 'classroom' %}
                                     <div class="form-group mb-4 col-12">
                                         <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
                                         <div>{{ data }}</div>
                                     </div>
+                                    <!-- 同步样式加到时间分-->
+                                {% elif data.name == 'start_time' or data.name == 'end_time' %}
+                                <div class="form-group mb-4 col-6">
+                                    <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                    <div>{{ data }}</div>
+                                </div>
                                 {% else %}
                                     <div class="form-group mb-4 col-6">
                                         <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
@@ -282,7 +295,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                            <button type="submit" class="btn btn-primary">发起练习<i class="fab fa-telegram-plane ml-1"></i></button>
+                            <button type="submit" class="btn btn-primary">发起考试<i class="fab fa-telegram-plane ml-1"></i></button>
                         </div>
 
                     </form>

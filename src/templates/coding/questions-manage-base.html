@@ -32,13 +32,13 @@
 {% block main %}
     <div class="row">
         <div class="col-12">
-            <!-- Left sidebar -->
+            <!-- 
             <div class="email-leftbar card">
-                <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-toggle="modal" data-target="#papermodal">
-                    <i class="mdi mdi-plus mr-2"></i>新建试卷
-                </button>
                 <button type="button" class="btn btn-primary btn-block waves-effect waves-light" data-toggle="modal" data-target="#questionsetmodal">
                     <i class="mdi mdi-plus mr-2"></i>新建题库
+                </button>
+                <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-toggle="modal" data-target="#papermodal">
+                    <i class="mdi mdi-plus mr-2"></i>新建试卷
                 </button>
 
                 <div class="mail-list mt-1">
@@ -64,23 +64,12 @@
                     <a href="#"><span style="margin-right: 8px;" class="mdi mdi-circle-outline text-success float-left"></span>第5章练习</a> {% endcomment %}
                 </div>
             </div>
-            <!-- End Left sidebar -->
+             End Left sidebar -->
 
 
             <!-- Right Sidebar -->
-            <div class="email-rightbar mb-3">
 
                 <div class="card">
-                    {% block right_header %}
-
-                    {% endblock right_header %}
-
-                    <div class="btn-toolbar p-3" role="toolbar">
-                        <div style="padding: 4px 0px 0px 4px;">
-                            <a href="" class="btn btn-success mb-2" data-toggle="modal" data-target="#questionmodal"><i class="mdi mdi-plus mr-2"></i>添加题目</a>
-                        </div>
-                    </div>
-
                     <div class="card-body  pt-0">
                         {% block right_body %}
 
@@ -88,7 +77,6 @@
                     </div>
 
                 </div> <!-- card -->
-            </div> <!-- end Col-9 -->
         </div>
     </div><!-- End row -->
 
@@ -168,7 +156,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="questionmodal" tabindex="-1" role="dialog" aria-labelledby="questionmodalTitle" aria-hidden="true">
+
+    <!-- <div class="modal fade" id="questionmodal" tabindex="-1" role="dialog" aria-labelledby="questionmodalTitle" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,9 +187,26 @@
                         <div class="text-center mt-4" style="padding-bottom: 50px;">
                             <button type="submit" class="btn btn-primary waves-effect waves-light">保存<i class="fab fa-telegram-plane ml-1"></i></button>
                         </div>
-
                     </form>
-                    <h4 class="card-title">批量导入题目</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="modal fade" id="questionmodal" tabindex="-1" role="dialog" aria-labelledby="questionmodalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paperTitle">批量导入题目</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body
                     <p class="card-title-desc">在此上传 <code>.csv</code> 格式题目列表可批量导入题目。<br><br>
                         列表需包含以下字段:
                         <ul>
@@ -258,7 +264,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
+
     <div class="modal fade" id="question-edit-modal" tabindex="-1" role="dialog" aria-labelledby="question-edit-modalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

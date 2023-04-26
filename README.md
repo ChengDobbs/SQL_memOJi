@@ -31,6 +31,7 @@ A Online-Judge Platform for NWPU DataBase Course.
 - Need two Mysql database account(root and oj)
 - Warn:now account oj's password is ojtest+1S. Very dangerous.
 - 需要手动建立一个名为oj，上述密码的用户
+- mysql> CREATE USER oj@localhost IDENTIFIED BY 'ojtest+1S';
 ## Usage  
 - `To be finished.`  
 

@@ -79,7 +79,7 @@ def exer_add(request):
     if exer_form.is_valid():
         exer_form.save()
 
-    return redirect('coding:exams-manage')
+    return redirect('coding:questions-manage')
 
 #------------------------------------Questions Manage Page-----------------------------------#
 
@@ -105,6 +105,7 @@ def questions_manage_base(request):
     }
 
     return render(request, 'coding/questions-manage-base.html', context=content)
+
 # XXX(Seddon Shen):need to modify the user control logic more
 def questions_manage(request):
     '''Render questions-manage template'''
@@ -112,15 +113,11 @@ def questions_manage(request):
     ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
     question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
-    question_list = models.Question.objects.filter(initiator_id=request.user.email)
+    question_list = models.Question.objects.all()
     ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
     paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
 
-    questions_cnt = models.Question.objects.filter(initiator_id=request.user.email).count()
-    # print(questions_cnt)
-    # print(question_list.values())
-
-
+    questions_cnt = models.Question.objects.all().count()
 
     content = {
         'ques_set_form': ques_set_form,
@@ -134,6 +131,40 @@ def questions_manage(request):
 
     return render(request, 'coding/questions-manage.html', context=content)
 
+def question_add(request):
+    '''Add question in questions-manage page'''
+
+    question_form = forms.QuestionForm(request.POST)
+
+    if question_form.is_valid():
+        question_form.save()
+
+    return redirect('coding:questions-manage')
+
+def ques_set_manage(request):
+    '''Render questions-manage template'''
+
+    ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
+    question_form = forms.QuestionForm(auto_id='id_ques_%s')
+    paper_form = forms.PaperForm(auto_id='id_paper_%s')
+    question_list = models.Question.objects.filter(initiator_id=request.user.email)
+    ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
+    paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
+    questions_cnt = models.Question.objects.filter(initiator_id=request.user.email).count()
+    # print(questions_cnt)
+    # print(question_list.values())
+
+    content = {
+        'ques_set_form': ques_set_form,
+        'question_form': question_form,
+        'paper_form': paper_form,
+        'question_list': question_list,
+        'ques_set_list': ques_set_list,
+        'paper_list': paper_list,
+        'questions_cnt': questions_cnt
+    }
+
+    return render(request, 'coding/ques-set-manage.html', context=content)
 
 # XXX(Steve X): database grants for teachers
 def ques_set_add(request):
@@ -179,21 +210,40 @@ def ques_set_add(request):
     cur.close()
     db.close()
 
-    return redirect('coding:questions-manage')
+    return redirect('coding:ques-set-manage')
 
 
-def question_add(request):
-    '''Add question in questions-manage page'''
 
-    question_form = forms.QuestionForm(request.POST)
-
-    if question_form.is_valid():
-        question_form.save()
-
-    return redirect('coding:questions-manage')
 
 
 # FIXME(Steve X): date time picker
+
+def papers_manage(request):
+    '''Render questions-manage template'''
+
+    ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
+    question_form = forms.QuestionForm(auto_id='id_ques_%s')
+    paper_form = forms.PaperForm(auto_id='id_paper_%s')
+    question_list = models.Question.objects.filter(initiator_id=request.user.email)
+    ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
+    paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
+
+    questions_cnt = models.Question.objects.filter(initiator_id=request.user.email).count()
+    # print(questions_cnt)
+    # print(question_list.values())
+
+    content = {
+        'ques_set_form': ques_set_form,
+        'question_form': question_form,
+        'paper_form': paper_form,
+        'question_list': question_list,
+        'ques_set_list': ques_set_list,
+        'paper_list': paper_list,
+        'questions_cnt': questions_cnt
+    }
+
+    return render(request, 'coding/papers-manage.html', context=content)
+
 def paper_add(request):
     '''Add paper in questions-manage page'''
 
@@ -204,7 +254,7 @@ def paper_add(request):
     else:
         print(paper_form.errors)
 
-    return redirect('coding:questions-manage')
+    return redirect('coding:papers-manage')
 #--------------------------------------------END---------------------------------------------#
 
 

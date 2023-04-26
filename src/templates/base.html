@@ -216,16 +216,69 @@
                             <li class="menu-title">数据中心</li>
                             <li>
                                 <a href="{% url 'user:class-manage' %}" class=" waves-effect">
-                                    <i class="ri-team-line"></i>
+                                    <i class="ri-file-user-line"></i>
                                     <span>班级数据</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{% url 'coding:statistics' %}" class=" waves-effect">
-                                    <i class="ri-line-chart-line"></i>
+                                    <i class="ri-pie-chart-line"></i>
                                     <span>统计数据</span>
                                 </a>
                             </li>
+
+                            <li class="menu-title">考试管理</li>
+                            <li>
+                                <a href="{% url 'coding:exams-manage' %}" class=" waves-effect">
+                                    <i class="ri-check-double-line"></i>
+                                    <span>考练管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'coding:ques-set-manage' %}" class=" waves-effect">
+                                    <i class="ri-file-list-3-line"></i>
+                                    <span>题库管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'coding:questions-manage' %}" class=" waves-effect">
+                                    <i class="ri-file-text-line"></i>
+                                    <span>题目管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'coding:papers-manage' %}" class=" waves-effect">
+                                    <i class="ri-file-copy-2-line"></i>
+                                    <span>试卷管理</span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title">用户中心</li>
+                            <li>
+                                <a href="{% url 'user:school-manage' %}" class=" waves-effect">
+                                    <i class="ri-home-4-line"></i>
+                                    <span>学校管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'user:class-manage' %}" class=" waves-effect">
+                                    <i class="ri-team-line"></i>
+                                    <span>班级管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'user:student-manage' %}" class=" waves-effect">
+                                    <i class="ri-group-line"></i>
+                                    <span>学生管理</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'user:user-manage' %}" class=" waves-effect">
+                                    <i class="ri-user-3-line"></i>
+                                    <span>用户管理</span>
+                                </a>
+                            </li>
+                            
                             {% endif %}
                         </ul>
                     </div>

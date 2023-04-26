@@ -59,16 +59,16 @@ result_backend = 'redis://127.0.0.1:6379/1'
 ```
 ### Start 启动
 ``` shell
-python3 manage.py makemigrations coding user
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py collectstatic
-python3 manage.py runserver ip:端口
+python manage.py makemigrations coding user
+python manage.py makemigrations
+python manage.py migrate
+python manage.py collectstatic
+python manage.py runserver ip:端口
 # 第四行命令collectstatic是为了首次生成可以在debug=False时使用的静态资源文件，否则将导致后台静态资源错误的情况。
 ```
 ### Create Superuser
 ``` shell
-python3 manage.py createsuperuser
+python manage.py createsuperuser
 ```
 ### Create A New School
 超级用户登录，按照要求新建学校，默认信息即为西北工业大学。
@@ -96,6 +96,8 @@ Login the admin page(http://ip:port/admin) with superuser identity.New a school 
 - 学生清单 增删改查(Add Change Delete View)
 PS:实际上不给予组权限和相关用户的权限即可。同时不要给予新建学校等的权限。如果无所谓其实可以全给，后台已经做过限制。并将该权限赋予该名老师，同时给予给老师工作人员状态(Staff权限若在前台网页注册时已经自动赋予)权限。(Staff权限若在前台网页注册时已经自动赋予)
 简而言之：就是禁止教师可以给用户赋予组权限，超级管理员权限，工作人员权限即可。
+### 添加教师
+
 ### 新建班级
 接下来即可新建一个班级，班级则可以直接通过新注册的教师账号进行创建，需要注意的是，我们需要指定一个**班级识别码**,并将该识别码分发给学生完成身份的注册。
 班级信息中的布尔型“需要学生清单”设置默认为需要状态（True），因此需要进行学生信息的导入，使用错误的学生信息加入班级将导致无法注册，具体详见下文相关章节。若关闭该设置，则任何用户注册时仅需输入正确的班级识别码即可注册成功和加入班级。

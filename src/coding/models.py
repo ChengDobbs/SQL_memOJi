@@ -43,12 +43,12 @@ class QuestionSet(models.Model):
     ques_set_name = models.CharField(verbose_name=_('题库名称'), max_length=100)
     ques_set_desc = models.TextField(verbose_name=_('题库描述'), null=True, blank=True)
     db_name = models.CharField(verbose_name=_('数据库名称'), unique=True, max_length=100, default='null')
-    create_sql = models.TextField(verbose_name=_('创建SQL'))
+    create_sql = models.TextField(verbose_name=_('创建库表 & 数据初始化SQL'))
     initiator = models.ForeignKey(verbose_name=_('发起人'), to='user.Teacher', on_delete=models.SET_NULL, null=True)
     share = models.BooleanField(verbose_name=_('其他老师可查看'), default=False)
 
     class Meta:
-        verbose_name = '题库'
+        verbose_name = '题库管理'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -72,11 +72,11 @@ class Question(models.Model):
 
     class Difficulty(models.IntegerChoices):
         '''Enumeration of question difficulty'''
-
         UNKNOWN = -1, _('未知')
         EASY = 0, _('简单')
         MEDIUM = 1, ('中等')
         HARD = 2, _('困难')
+        TOP = 3, _('挑战')
 
     ques_id = models.AutoField(verbose_name=_('题目ID'), primary_key=True)
     ques_name = models.CharField(verbose_name=_('题目名称'), max_length=100, null=True, default=_('未命名'))
@@ -88,7 +88,7 @@ class Question(models.Model):
     share = models.BooleanField(verbose_name=_('其他老师可查看'), default=False)
 
     class Meta:
-        verbose_name = '题目'
+        verbose_name = '题目管理'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -168,7 +168,7 @@ class Exam(models.Model):
     end_time = models.DateTimeField(verbose_name=_('结束时间'), default=None)
     publish_time = models.DateTimeField(verbose_name=_('发布时间'), auto_now_add=True)
     desc = models.TextField(verbose_name=_('描述'), null=True, blank=True)
-    active = models.BooleanField(verbose_name=_('发布'), default=False)
+    active = models.BooleanField(verbose_name=_('发布'), default=True)
     classroom = models.ManyToManyField(verbose_name=_('分配班级'), to='user.Classroom')
     show_answer = models.BooleanField(verbose_name=_('在解析中公布答案'),default=False)
     def __str__(self):
@@ -266,7 +266,7 @@ class Exercise(models.Model):
         # query_result = .objects.filter(exam=self, status=True)
         questions = self.paper.paperquestion_set.filter(paper=self.paper)
         return questions.first().question.ques_id
-        
+
 # class QuesAnswerRec(models.Model):
 #     '''
 #     Question Answer Record Table

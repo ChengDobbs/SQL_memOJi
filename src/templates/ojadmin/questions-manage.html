@@ -1,0 +1,131 @@
+{% extends 'coding/questions-manage-base.html' %}
+{% block title %}题库 & 试卷管理{% endblock title %}
+{% block page_title %}题库 & 试卷管理{% endblock page_title %}
+
+<!-- Breadcrumb -->
+{% block breadcrumb %}
+    <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'coding:questions-manage' %}">题库 & 试卷管理</a></li>
+        </ol>
+    </div>
+{% endblock breadcrumb %}
+
+<!-- CSS -->
+{% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Form Advanced Styles -->
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Plugins css -->
+    <link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
+
+
+
+<!-- Main Content -->
+{% block right_header %}
+{% endblock right_header %}
+
+{% block right_body %}
+    <div class="table-responsive" style="margin-top: 20px;">
+        <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 20px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customercheck">
+                            <label class="custom-control-label" for="customercheck">&nbsp;</label>
+                        </div>
+                    </th>
+                    <th>题号</th>
+                    <th>题目名</th>
+                    <th>描述</th>
+                    <th>所属题库</th>
+                    <th>正确率</th>
+                    <th>难度</th>
+                    <th style="width: 120px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ques in question_list %}
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="ques_id_{{ ques.ques_id }}">
+                                <label class="custom-control-label" for="ques_id_{{ ques.ques_id }}">&nbsp;</label>
+                            </div>
+                        </td>
+                        <td>{{ ques.ques_id }}</td>
+                        <td>{{ ques.ques_name }}</td>
+                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_desc }}</td>
+                        <td>{{ ques.ques_set }}</td>
+                        <td>(90%)</td>
+                        <td>
+                            {% if ques.ques_difficulty == -1 %}
+                                <div class="badge badge-soft-info font-size-12">{{ ques.get_ques_difficulty_display }}</div>
+                            {% endif %}
+                            {% if ques.ques_difficulty == 0 %}
+                                <div class="badge badge-soft-success font-size-12">{{ ques.get_ques_difficulty_display }}</div>
+                            {% endif %}
+                            {% if ques.ques_difficulty == 1 %}
+                                <div class="badge badge-soft-warning font-size-12">{{ ques.get_ques_difficulty_display }}</div>
+                            {% endif %}
+                            {% if ques.ques_difficulty == 2 %}
+                                <div class="badge badge-soft-danger font-size-12">{{ ques.get_ques_difficulty_display }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
+                            <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock right_body %} <!-- right side content -->
+
+
+{% block modal %}
+{% endblock modal %}
+<!-- End Main Content -->
+
+<!-- JS -->
+{% block js %}
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <!-- Form Validation -->
+    <script src="{% static 'js/pages/form-validation.init.js' %}"></script>
+
+    <!-- Plugins js -->
+    <script src="{% static 'libs/dropzone/min/dropzone.min.js' %}"></script>
+
+    <!-- Form Advanced -->
+    <script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+    <!-- form mask -->
+    <script src="{% static 'libs/inputmask/jquery.inputmask.min.js' %}"></script>
+
+    <!-- form mask init -->
+    <script src="{% static 'js/pages/form-mask.init.js' %}"></script>
+
+    <!-- Custom Pages -->
+    <script src="{% static 'js/custom-pages/questions-manage.js' %}"></script>
+    <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+{% endblock js %}

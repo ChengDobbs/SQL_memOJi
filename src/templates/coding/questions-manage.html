@@ -1,13 +1,13 @@
 {% extends 'coding/questions-manage-base.html' %}
-{% block title %}题库 & 试卷管理{% endblock title %}
-{% block page_title %}题库 & 试卷管理{% endblock page_title %}
+{% block title %}题目管理{% endblock title %}
+{% block page_title %}题目管理{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'coding:questions-manage' %}">题库 & 试卷管理</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'coding:questions-manage' %}">题目管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -37,6 +37,120 @@
 
 {% block right_body %}
     <div class="table-responsive" style="margin-top: 20px;">
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#input_questionmodal">
+            <i class="mdi mdi-plus mr-2"></i>手动添加题目
+        </button>
+        <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#import_questionmodal">
+            <i class="mdi mdi-plus mr-2"></i>批量导入题目
+        </button>
+        <br>
+        </br>
+        <div class="modal fade" id="input_questionmodal" tabindex="-1" role="dialog" aria-labelledby="questionmodalTitle" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form method="POST" class="needs-validation" action="{% url 'coding:question-add' %}" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paperTitle"><i class="mdi mdi-plus mr-2"></i>添加题目</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-target="#questionmodal">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    
+
+                    <div class="modal-body">
+                            {% csrf_token %}
+                            <div class="row">
+                                {% for data in question_form %}
+                                    {% if data.name == 'ques_desc' or data.name == 'ques_ans' %}
+                                        <div class="form-group mb-4 col-12">
+                                            <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                            <div>{{ data }}</div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-group mb-4 col-6">
+                                            <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                            <div>{{ data }}</div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="import_questionmodal" tabindex="-1" role="dialog" aria-labelledby="questionmodalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paperTitle">批量导入题目</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body
+                        <p class="card-title-desc">在此上传 <code>.csv</code> 格式题目列表可批量导入题目。<br><br>
+                            列表需包含以下字段:
+                            <ul>
+                                <li>
+                                    <code>ques_name</code>(题目名)<br>
+                                </li>
+                                <li>
+                                    <code>initiator</code>(发起人)<br>
+                                </li>
+                                <li>
+                                    <code>ques_db</code>(所属题库)<br>
+                                </li>
+                                <li>
+                                    <code>ques_difficulty</code>(题目难度)<br>
+                                </li>
+                                <li>
+                                    <code>ques_desc</code>(描述)<br>
+                                </li>
+                                <li>
+                                    <code>ques_ans</code>(标准答案)<br>
+                                </li>
+                            </ul>
+                        </p>
+    
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="mdi mdi-alert-outline mr-2"></i>
+                            不按格式将无法解析列表。
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+    
+                        <div>
+                            <form action="#" class="dropzone" id="file-dropzone-CSV" method="POST" enctype="multipart/form-data">
+                                <div class="fallback">
+                                    <input name="file" type="file" multiple="multiple">
+                                </div>
+                                <div class="dz-message needsclick">
+                                    <div class="mb-3">
+                                        <i class="display-4 text-muted ri-upload-cloud-2-line"></i>
+                                    </div>
+    
+                                    <h4>拖动文件至此或点击此处选择文件</h4>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             <thead class="thead-light">
                 <tr>
@@ -56,6 +170,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- {{ questions_cnt }} -->
                 {% for ques in question_list %}
                     <tr>
                         <td>
@@ -68,7 +183,7 @@
                         <td>{{ ques.ques_name }}</td>
                         <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_desc }}</td>
                         <td>{{ ques.ques_set }}</td>
-                        <td>(90%)</td>
+                        <td>(90%)</td> <!-- {{ ques.ques_correct_rate }} -->
                         <td>
                             {% if ques.ques_difficulty == -1 %}
                                 <div class="badge badge-soft-info font-size-12">{{ ques.get_ques_difficulty_display }}</div>
