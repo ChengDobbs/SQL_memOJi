@@ -116,7 +116,7 @@ class Paper(models.Model):
     initiator = models.ForeignKey(verbose_name=_('发起人'), to='user.Teacher', on_delete=models.SET_NULL, null=True)
     question = models.ManyToManyField(verbose_name=_('题目列表'),to=Question,through='PaperQuestion')
     share = models.BooleanField(verbose_name=_('其他老师可查看'), default=False)
-
+    
     def total_score(self):
         questions = self.paperquestion_set.filter(paper=self)
         total_score = 0
