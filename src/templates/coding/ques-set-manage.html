@@ -29,18 +29,15 @@
 {% endblock css %}
 
 
-
-
 <!-- Main Content -->
 
 {% block right_body %}
-
     <div class="table-responsive" style="margin-top: 20px;">
         <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#questionsetmodal">
-            <i class="mdi mdi-plus mr-2"></i>新建题库
+            <a class="mdi mdi-plus mr-2"></a>新建题库
         </button>
         <br>
-        </br>
+        <br>
         <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             <thead class="thead-light">
                 <tr>
@@ -55,25 +52,26 @@
                     <th>题库描述</th>
                     <th>数据库名称</th>
                     <th>发起人</th>
-                    <th style="width: 120px;">其他老师能否查看</th>
+                    <th>其他老师能否查看</th>
+                    <th style="width: 120px;">操作</th>
                 </tr>
             </thead>
             <tbody>
-                {% for ques in question_list %}
+                {% for ques in ques_set_list %}
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="ques_id_{{ ques.ques_id }}">
-                                <label class="custom-control-label" for="ques_id_{{ ques.ques_id }}">&nbsp;</label>
+                                <input type="checkbox" class="custom-control-input" id="ques_set_id_{{ ques.ques_set_id }}">
+                                <label class="custom-control-label" for="ques_set_id_{{ ques.ques_set_id }}">&nbsp;</label>
                             </div>
                         </td>
-                        <td>{{ ques.ques_id }}</td>
-                        <td>{{ ques.ques_name }}</td>
-                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_desc }}</td>
-                        <td>{{ ques.ques_set }}</td>
-                        <td>(90%)</td>
+                        <td>{{ ques.ques_set_id }}</td>
+                        <td>{{ ques.ques_set_name }}</td>
+                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_set_desc }}</td>
+                        <td>{{ ques.db_name }}</td>
+                        <td>{{ ques.initiator }}</td>
                         <td>
-                            <div class="badge badge-soft-info font-size-12">{{ ques.get_ques_difficulty_display }}</div>
+                            <div class="badge badge-soft-info font-size-12">{{ ques.share }}</div>
                         </td>
                         <td>
                             <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
@@ -88,8 +86,6 @@
 {% endblock right_body %} <!-- right side content -->
 
 
-{% block modal %}
-{% endblock modal %}
 <!-- End Main Content -->
 
 <!-- JS -->

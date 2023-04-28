@@ -6,14 +6,20 @@
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">数据中心</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'user:class-manage' %}">班级成绩数据</a></li>
+            <li class="breadcrumb-item"><a href="javascript: void(0);">用户中心</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'user:class-manage' %}">学校管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
 
 <!-- CSS -->
 {% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
     <!-- Form Advanced Styles -->
     <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
 
@@ -23,42 +29,51 @@
 
 <!-- Main Content -->
 {% block main %}
-    <div class="row">
-        {% for cls in class_list %}
-            <div class="col-xl-6 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <img src="{% static 'images/classroom.png' %}" alt="" class="avatar-sm mt-2 mb-4">
-                            <div class="media-body">
-                                <h5 class="text-truncate"><a href="#" class="text-dark">{{ cls.class_name }}</a></h5>
-                                <p class="text-muted">{{ cls.school.school_abbr }}_{{cls.class_id}}</p>
-                                {% if cls.class_desc %}
-                                    <p class="text-muted">{{cls.class_desc}}</p>
-                                {% else %}
-                                    <p class="text-muted"><br></p>
-                                {% endif %}
-                                <p class="text-muted">
-                                    <i class="mdi mdi-account mr-1"></i> {{ cls.teacher }}
-                                </p>
-                            </div>
+<div class="card col-12">
+    <div class="table-responsive" style="margin-top: 20px;">
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#papermodal">
+            <i class="mdi mdi-plus mr-2"></i>新建试卷
+        </button>
+        <br>
+        </br>
+        <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 20px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customercheck">
+                            <label class="custom-control-label" for="customercheck">&nbsp;</label>
                         </div>
-
-                        <hr class="my-4">
-
-                        <div class="row text-center">
-                            <div class="col-12">
-                                <p class="text-muted mb-2">人数</p>
-                                <h5>{{cls.students_count}} / {{cls.studentlist_set.all.count}}</h5>
+                    </th>
+                    <th>学校ID</th>
+                    <th>学校全称</th>
+                    <th>学校英文全称</th>
+                    <th style="width: 120px;">学校英文缩写</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schl in school_list %}
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="ques_id_{{ ques.ques_id }}">
+                                <label class="custom-control-label" for="ques_id_{{ ques.ques_id }}">&nbsp;</label>
                             </div>
-                        </div>
-                        <div class="text-center"><a href="{% url 'user:class-details' cls.class_id %}" class="btn btn-primary mt-1 waves-effect waves-light">查看</a></div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-
+                        </td>
+                        <td>{{ schl.school_id }}</td>
+                        <td>{{ schl.school_name }}</td>
+                        <td>{{ schl.school_name_en }}</td>
+                        <td>{{ schl.school_abbr }}</td>
+                        <!-- <td>
+                            <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
+                            <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a>
+                        </td> -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div>
     <!-- end row -->
 
 

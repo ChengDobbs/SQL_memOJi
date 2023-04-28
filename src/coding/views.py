@@ -114,8 +114,8 @@ def questions_manage(request):
     question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
     question_list = models.Question.objects.all()
-    ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
-    paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
+    ques_set_list = models.QuestionSet.objects.all()
+    paper_list = models.Paper.objects.all()
 
     questions_cnt = models.Question.objects.all().count()
 
@@ -147,10 +147,10 @@ def ques_set_manage(request):
     ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
     question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
-    question_list = models.Question.objects.filter(initiator_id=request.user.email)
-    ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
-    paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
-    questions_cnt = models.Question.objects.filter(initiator_id=request.user.email).count()
+    question_list = models.Question.objects.all()
+    ques_set_list = models.QuestionSet.objects.all()
+    paper_list = models.Paper.objects.all()
+    questions_cnt = models.Question.objects.all().count()
     # print(questions_cnt)
     # print(question_list.values())
 
@@ -213,40 +213,20 @@ def ques_set_add(request):
     return redirect('coding:ques-set-manage')
 
 
-
-
-
 # FIXME(Steve X): date time picker
 
 def papers_manage(request):
     '''Render questions-manage template'''
-
-    ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
-    question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
-    question_list = models.Question.objects.filter(initiator_id=request.user.email)
-    ques_set_list = models.QuestionSet.objects.filter(initiator_id=request.user.email)
-    paper_list = models.Paper.objects.filter(initiator_id=request.user.email)
-
-    questions_cnt = models.Question.objects.filter(initiator_id=request.user.email).count()
-    # print(questions_cnt)
-    # print(question_list.values())
-
+    paper_list = models.Paper.objects.all()
     content = {
-        'ques_set_form': ques_set_form,
-        'question_form': question_form,
         'paper_form': paper_form,
-        'question_list': question_list,
-        'ques_set_list': ques_set_list,
         'paper_list': paper_list,
-        'questions_cnt': questions_cnt
     }
-
     return render(request, 'coding/papers-manage.html', context=content)
 
 def paper_add(request):
     '''Add paper in questions-manage page'''
-
     paper_form = forms.PaperForm(request.POST)
 
     if paper_form.is_valid():

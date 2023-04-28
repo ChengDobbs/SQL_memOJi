@@ -124,6 +124,7 @@ class Paper(models.Model):
             total_score += question.score
         return total_score
     total_score.short_description = '试卷总分'
+    
     class Meta:
         verbose_name = '试卷'
         verbose_name_plural = verbose_name

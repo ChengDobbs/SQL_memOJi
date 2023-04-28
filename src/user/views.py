@@ -24,8 +24,8 @@ from django.contrib import auth
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from django.db.models import Sum
-from user.models import Student, User, Classroom, StudentList
-from user.forms import UserInfoForm, StudentForm, ClassroomForm
+from user import models
+from user import forms
 from coding.models import Exam, Exercise, Question, QuestionSet, ExerAnswerRec, ExamAnswerRec, ExamQuesAnswerRec, ExerQuesAnswerRec
 import datetime
 from django.utils import timezone
@@ -285,10 +285,11 @@ def auth_register_done(request):
 
 #--------------------------------------School Management Pages--------------------------------------#
 class SchoolManage(View):
-    '''Render class-manage template'''
+    '''Render school-manage template'''
     def get(self, request):
-        key = request.user.is_authenticated & request.user.is_superuser
+        # key = request.user.is_authenticated & request.user.is_superuser
         # print(request.user.is_authenticated)
+        
         if request.user.is_authenticated == False:
             content = {
                 'err_code': '403',
@@ -296,27 +297,26 @@ class SchoolManage(View):
             }
             return render(request, 'error.html', context=content)
         else:
-            identity = request.user.identity()
-            if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
-                # XXX(Seddon Shen): 使用反向查询_set()去找学生 需注意全部字段小写
-                if request.user.is_superuser:
-                    class_list = Classroom.objects.all()
-                else:
-                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
+            # identity = request.user.identity()
+            if request.user.is_superuser:
 
-                for cls in class_list:
-                    print(cls)
-                    print(cls.studentlist_set.all().count(  ))
+                school_list = models.School.objects.all()
+                # school_id = forms.QuestionForm(auto_id='id_ques_%s')
+                # school_name = forms.PaperForm(auto_id='id_paper_%s')
+                # school_name_en = models.Question.objects.all()
+                # school_address = models.QuestionSet.objects.all()
+                # school_abbr = models.Paper.objects.all()
+
                 content = {
-                    'class_list': class_list,
+                    'school_list': school_list,
                 }
-                return render(request, 'user/class-manage.html', context=content)
+                return render(request, 'user/school-manage.html', context=content)
             else:
                 content = {
                     'err_code': '403',
                     'err_message': _('没有权限'),
                 }
-                return render(request, 'error.html', context=content)
+        return render(request, 'error.html', context=content)
 
 
 class SchoolDetails(View):
