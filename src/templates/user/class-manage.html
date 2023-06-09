@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'user/user-manage-base.html' %}
 {% block title %}班级成绩数据{% endblock title %}
 {% block page_title %}班级成绩数据{% endblock page_title %}
 
@@ -6,14 +6,20 @@
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">数据中心</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'user:class-manage' %}">班级成绩数据</a></li>
+            <li class="breadcrumb-item"><a href="javascript: void(0);">用户中心</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'user:class-manage' %}">班级管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
 
 <!-- CSS -->
 {% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
     <!-- Form Advanced Styles -->
     <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
 
@@ -22,50 +28,108 @@
 {% endblock css %}
 
 <!-- Main Content -->
-{% block main %}
-
-    <div class="row">
-        {% for cls in class_list %}
-            <div class="col-xl-6 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <img src="{% static 'images/classroom.png' %}" alt="" class="avatar-sm mt-2 mb-4">
-                            <div class="media-body">
-                                <h5 class="text-truncate"><a href="#" class="text-dark">{{ cls.class_name }}</a></h5>
-                                <p class="text-muted">{{ cls.school.school_abbr }}_{{cls.class_id}}</p>
-                                {% if cls.class_desc %}
-                                    <p class="text-muted">{{cls.class_desc}}</p>
-                                {% else %}
-                                    <p class="text-muted"><br></p>
-                                {% endif %}
-                                <p class="text-muted">
-                                    <i class="mdi mdi-account mr-1"></i> {{ cls.teacher }}
-                                </p>
+{% block right_body %}
+    <div class="table-responsive" style="margin-top: 20px;">
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#classadd">
+            <i class="mdi mdi-plus mr-2"></i>添加班级
+        </button>
+        <br>
+        </br>
+        <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width: 20px;">
+                        <!-- <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customercheck"/>
+                            <label class="custom-control-label" for="customercheck">&nbsp;</label>
+                        </div> -->
+                    </th>
+                    <th>班级ID</th>
+                    <th>学校</th>
+                    <th>班级名称</th>
+                    <th>负责教师</th>
+                    <th>班级描述</th>
+                    <th>班级识别码</th>
+                    <!-- <th>有效状态</th> -->
+                    <!-- <th>需要学生清单</th> -->
+                    <th style="width: 120px;">编辑</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in class_list %}
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="class_id_{{ class.class_id }}">
+                                <label class="custom-control-label" for="class_id_{{ class.class_id }}">&nbsp;</label>
+                            </div>
+                        </td>
+                        <td>{{ class.class_id }}</td>
+                        <td>{{ class.school }}</td>
+                        <td>{{ class.class_name }}</td>
+                        <td>{{ class.teacher }}</td>
+                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ class.class_desc }}</td>
+                        <!-- <td>{{ paper.total_score }}</td> -->
+                        <td>{{ class.join_code }}</td>
+                        <!-- <td>
+                            <div class="badge badge-soft-info font-size-12">{{ class.active }}</div>
+                        </td> -->
+                        <!-- <td>
+                            <div class="badge badge-soft-info font-size-12">{{ class.need_list }}</div>
+                        </td> -->
+                        <td>
+                            <a href="javascript:void(0);" data-target="#class-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
+                            <!-- <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a> -->
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="class-edit-modal" tabindex="-1" role="dialog" aria-labelledby="class-edit-modalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="classaddTitle">修改班级信息</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" class="needs-validation" action="{% url 'user:class-edit' %}" novalidate>
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            {% for data in class_form %}
+                                                {% if data.name == 'school' or data.name == 'teacher' %}
+                                                    <div class="form-group col-12">
+                                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                                        <div>{{ data }}</div>
+                                                    </div>
+                                                {% elif data.name == 'class_desc' %}
+                                                    <div class="form-group col-12">
+                                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                                        <div>{{ data }}</div>
+                                                        <textarea class="form-control" id="{{ data.id_for_label }}" placeholder="填写班级描述" required>{{ class.class_desc }}</textarea>
+                                                    </div>
+                                                {% else %}
+                                                <div class="form-group col-6">
+                                                    <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                                    <div>{{ data }}</div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-
-                        <hr class="my-4">
-
-                        <div class="row text-center">
-                            <div class="col-12">
-                                <p class="text-muted mb-2">人数</p>
-                                <h5>{{cls.students_count}} / {{cls.studentlist_set.all.count}}</h5>
-                            </div>
-                        </div>
-                        <div class="text-center"><a href="{% url 'user:class-details' cls.class_id %}" class="btn btn-primary mt-1 waves-effect waves-light">查看</a></div>
                     </div>
-                </div>
-            </div>
-        {% endfor %}
-
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     <!-- end row -->
-
-
-
-
-{% endblock main %}
+{% endblock right_body %}
 
 <!-- JS -->
 {% block js %}

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}题库 & 试卷管理模板{% endblock title %}
-{% block page_title %}题库 & 试卷管理模板{% endblock page_title %}
+{% block title %}用户中心模板{% endblock title %}
+{% block page_title %}用户中心模板{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'coding:questions-manage' %}">题库 & 试卷管理</a></li>
+            <li class="breadcrumb-item"><a href="javascript: void(0);">用户中心</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'coding:questions-manage' %}">用户管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -39,40 +39,61 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="papermodal" tabindex="-1" role="dialog" aria-labelledby="papermodalTitle" aria-hidden="true">
+    <!-- hover model -->
+    <div class="modal fade" id="schooladd" tabindex="-1" role="dialog" aria-labelledby="schooladdTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="papermodalTitle"><a class="mdi mdi-plus mr-2"></a>新建试卷</h5>
+                    <h5 class="modal-title" id="schooladdTitle">添加学校</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" class="needs-validation" action="{% url 'coding:paper-add' %}" novalidate>
+                    <form method="POST" class="needs-validation" action="{% url 'user:school-add' %}" novalidate>
                         {% csrf_token %}
                         <div class="row">
-                            {% for data in paper_form %}
-                                {% if data.name == 'paper_desc' %}
-                                    <div class="form-group mb-4 col-12">
-                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
-                                        <div>{{ data }}</div>
-                                    </div>
-                                {% else %}
-                                    <div class="form-group mb-4 col-6">
-                                        <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
-                                        <div>{{ data }}</div>
-                                    </div>
-                                {% endif %}
+                            {% for data in school_form %}
+                                <div class="form-group col-12">
+                                    <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                    <div>{{ data }}</div>
+                                </div>
                             {% endfor %}
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                             <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
                         </div>
-
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- class add hover model -->
+    <div class="modal fade" id="classadd" tabindex="-1" role="dialog" aria-labelledby="classaddTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="classaddTitle">添加班级</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="needs-validation" action="{% url 'user:class-add' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for data in class_form %}
+                                <div class="form-group col-12">
+                                    <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                    <div>{{ data }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -82,7 +103,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="questionsetmodalTitle"><a class="mdi mdi-plus mr-2"></a>新建题库</h5>
+                    <h5 class="modal-title" id="questionsetmodalTitle">新建题库</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -164,7 +185,7 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body
+                <div class="modal-body">
                     <p class="card-title-desc">在此上传 <code>.csv</code> 格式题目列表可批量导入题目。<br><br>
                         列表需包含以下字段:
                         <ul>
@@ -195,6 +216,11 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+                    </div>
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                          Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                        </div>
                     </div>
 
                     <div>
@@ -311,6 +337,36 @@
             </div>
         </div>
     </div>
+
+    <!-- <div class="modal fade" id="class-edit-modal" tabindex="-1" role="dialog" aria-labelledby="class-edit-modalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="classaddTitle">修改班级信息</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="needs-validation" action="{% url 'user:class-add' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for data in class_form %}
+                                <div class="form-group col-12">
+                                    <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                                    <div>{{ data }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="submit" class="btn btn-primary">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
 
 {% endblock main %}
 

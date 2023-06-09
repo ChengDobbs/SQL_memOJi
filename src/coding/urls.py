@@ -38,8 +38,8 @@ urlpatterns = [
     path('questions-manage/ques-set-add/', views.ques_set_add, name='ques-set-add'),
     path('questions-manage/question-add/', views.question_add, name='question-add'),
     path('questions-manage/paper-add/', views.paper_add, name='paper-add'),
-    path('questions-manage/paper-add/<ques_set_id>/', views.paper_add, name='paper-add'),
-    path('questions-manage/paper-add/<ques_set_id>/<paper_id>/', views.paper_add, name='paper-add'),
+    path('questions-manage/question-edit/<question_id>/', views.question_edit, name='question-edit'),
+    path('questions-manage/question-remove', views.question_remove, name='question-remove'),
 
     # Ques-set-manage Page
     path('ques-set-manage/', views.ques_set_manage, name='ques-set-manage'),

@@ -1,13 +1,13 @@
 {% extends 'coding/questions-manage-base.html' %}
-{% block title %}试卷管理{% endblock title %}
-{% block page_title %}试卷管理{% endblock page_title %}
+{% block title %}题库管理{% endblock title %}
+{% block page_title %}题库管理{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'coding:papers-manage' %}">试卷管理</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'coding:ques-set-manage' %}">题库管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -28,12 +28,13 @@
     <link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock css %}
 
+
 <!-- Main Content -->
 
 {% block right_body %}
     <div class="table-responsive" style="margin-top: 20px;">
-        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#papermodal">
-            <a class="mdi mdi-plus mr-2"></a>新建试卷
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#questionsetmodal">
+            <a class="mdi mdi-plus mr-2"></a>新建题库
         </button>
         <br>
         <br>
@@ -41,38 +42,36 @@
             <thead class="thead-light">
                 <tr>
                     <th style="width: 20px;">
-                        <!-- <div class="custom-control custom-checkbox">
+                        <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="customercheck">
                             <label class="custom-control-label" for="customercheck">&nbsp;</label>
-                        </div> -->
+                        </div>
                     </th>
-                    <th>试卷ID</th>
-                    <th>试卷名称</th>
-                    <th>试卷描述</th>
+                    <th>题库ID</th>
+                    <th>题库名称</th>
+                    <th>题库描述</th>
+                    <th>数据库名称</th>
                     <th>发起人</th>
-                    <th>发布时间</th>
-                    <!-- <th>试卷总分</th> -->
                     <th>其他老师能否查看</th>
                     <th style="width: 120px;">操作</th>
                 </tr>
             </thead>
             <tbody>
-                {% for paper in paper_list %}
+                {% for ques in ques_set_list %}
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="paper_id_{{ paper.paper_id }}">
-                                <label class="custom-control-label" for="paper_id_{{ paper.paper_id }}">&nbsp;</label>
+                                <input type="checkbox" class="custom-control-input" id="ques_set_id_{{ ques.ques_set_id }}">
+                                <label class="custom-control-label" for="ques_set_id_{{ ques.ques_set_id }}">&nbsp;</label>
                             </div>
                         </td>
-                        <td>{{ paper.paper_id }}</td>
-                        <td>{{ paper.paper_name }}</td>
-                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ paper.paper_desc }}</td>
-                        <td>{{ paper.initiator }}</td>
-                        <td>{{ paper.publish_time }}</td>
-                        <!-- <td>{{ paper.total_score }}</td> -->
+                        <td>{{ ques.ques_set_id }}</td>
+                        <td>{{ ques.ques_set_name }}</td>
+                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_set_desc }}</td>
+                        <td>{{ ques.db_name }}</td>
+                        <td>{{ ques.initiator }}</td>
                         <td>
-                            <div class="badge badge-soft-info font-size-12">{{ paper.share }}</div>
+                            <div class="badge badge-soft-info font-size-12">{{ ques.share }}</div>
                         </td>
                         <td>
                             <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
@@ -81,10 +80,9 @@
                     </tr>
                 {% endfor %}
             </tbody>
-            
         </table>
     </div>
-{% endblock right_body %} right side content
+{% endblock right_body %} <!-- right side content -->
 
 <!-- JS -->
 {% block js %}

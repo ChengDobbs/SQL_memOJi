@@ -201,7 +201,6 @@ class Classroom(models.Model):
         count = detail.student_set.count()
         return count
 
-
     class Meta:
         verbose_name = '班级'
         verbose_name_plural = verbose_name

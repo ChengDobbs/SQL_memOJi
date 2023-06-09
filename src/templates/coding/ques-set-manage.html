@@ -53,7 +53,7 @@
                     <th>数据库名称</th>
                     <th>发起人</th>
                     <th>其他老师能否查看</th>
-                    <th style="width: 120px;">操作</th>
+                    <th style="width: 120px;">编辑</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,11 +71,11 @@
                         <td>{{ ques.db_name }}</td>
                         <td>{{ ques.initiator }}</td>
                         <td>
-                            <div class="badge badge-soft-info font-size-12">{{ ques.share }}</div>
+                            <div class="badge badge-soft-info font-size-12" align="center">{{ ques.share }}</div>
                         </td>
                         <td>
                             <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
-                            <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a>
+                            <!-- <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a> -->
                         </td>
                     </tr>
                 {% endfor %}

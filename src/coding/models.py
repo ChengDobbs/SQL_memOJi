@@ -25,7 +25,7 @@ from django.db.models import Avg
 from user.models import Student
 # Create your models here.
 
-
+# 题库建表
 class QuestionSet(models.Model):
     '''
     QuestionSet Table

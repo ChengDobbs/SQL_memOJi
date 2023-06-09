@@ -1,13 +1,13 @@
-{% extends 'coding/questions-manage-base.html' %}
-{% block title %}试卷管理{% endblock title %}
-{% block page_title %}试卷管理{% endblock page_title %}
+{% extends 'user/user-manage-base.html' %}
+{% block title %}学生管理{% endblock title %}
+{% block page_title %}学生管理{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'coding:papers-manage' %}">试卷管理</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'user:student-manage' %}">学生管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -32,8 +32,14 @@
 
 {% block right_body %}
     <div class="table-responsive" style="margin-top: 20px;">
-        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#papermodal">
-            <a class="mdi mdi-plus mr-2"></a>新建试卷
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#student_add">
+            <a class="mdi mdi-plus mr-2"></a>添加学生
+        </button>
+        <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#download-unjoined-students">
+            <a class="mdi mdi-plus mr-2"></a>导出未加入学生列表
+        </button>
+        <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#delete-selected-student">
+            <a class="mdi mdi-minus mr-2"></a>删除选定学生
         </button>
         <br>
         <br>
@@ -41,42 +47,42 @@
             <thead class="thead-light">
                 <tr>
                     <th style="width: 20px;">
-                        <!-- <div class="custom-control custom-checkbox">
+                        <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="customercheck">
                             <label class="custom-control-label" for="customercheck">&nbsp;</label>
-                        </div> -->
+                        </div>
                     </th>
-                    <th>试卷ID</th>
-                    <th>试卷名称</th>
-                    <th>试卷描述</th>
-                    <th>发起人</th>
-                    <th>发布时间</th>
+                    <th>学生ID</th>
+                    <th>姓名</th>
+                    <th>学号</th>
+                    <th>班级</th>
+                    <th>班级识别码</th>
                     <!-- <th>试卷总分</th> -->
-                    <th>其他老师能否查看</th>
+                    <th>加入状态</th>
                     <th style="width: 120px;">操作</th>
                 </tr>
             </thead>
             <tbody>
-                {% for paper in paper_list %}
+                {% for std in student_list %}
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="paper_id_{{ paper.paper_id }}">
-                                <label class="custom-control-label" for="paper_id_{{ paper.paper_id }}">&nbsp;</label>
+                                <input type="checkbox" class="custom-control-input" id="student_id_{{ std.record_id }}">
+                                <label class="custom-control-label" for="student_id_{{ std.record_id }}">&nbsp;</label>
                             </div>
                         </td>
-                        <td>{{ paper.paper_id }}</td>
-                        <td>{{ paper.paper_name }}</td>
-                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ paper.paper_desc }}</td>
-                        <td>{{ paper.initiator }}</td>
-                        <td>{{ paper.publish_time }}</td>
-                        <!-- <td>{{ paper.total_score }}</td> -->
+                        <td>{{ std.record_id }}</td>
+                        <td>{{ std.full_name }}</td>
+                        <!-- <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ paper.paper_desc }}</td> -->
+                        <td>{{ std.internal_id }}</td>
+                        <td>{{ std.classroom }}</td>
+                        <td>{{ std.join_code }}</td>
                         <td>
-                            <div class="badge badge-soft-info font-size-12">{{ paper.share }}</div>
+                            <div class="badge badge-soft-info font-size-12">{{ std.join_status }}</div>
                         </td>
                         <td>
                             <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
-                            <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a>
+                            <!-- <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a> -->
                         </td>
                     </tr>
                 {% endfor %}
@@ -85,6 +91,8 @@
         </table>
     </div>
 {% endblock right_body %} right side content
+
+
 
 <!-- JS -->
 {% block js %}

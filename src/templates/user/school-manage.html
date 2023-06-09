@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
-{% block title %}班级成绩数据{% endblock title %}
-{% block page_title %}班级成绩数据{% endblock page_title %}
+{% extends 'user/user-manage-base.html' %}
+{% block title %}学校管理{% endblock title %}
+{% block page_title %}学校管理{% endblock page_title %}
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript: void(0);">用户中心</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'user:class-manage' %}">学校管理</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'user:school-manage' %}">学校管理</a></li>
         </ol>
     </div>
 {% endblock breadcrumb %}
@@ -28,11 +28,10 @@
 {% endblock css %}
 
 <!-- Main Content -->
-{% block main %}
-<div class="card col-12">
+{% block right_body %}
     <div class="table-responsive" style="margin-top: 20px;">
-        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#papermodal">
-            <i class="mdi mdi-plus mr-2"></i>新建试卷
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#schooladd">
+            <i class="mdi mdi-plus mr-2"></i>添加学校
         </button>
         <br>
         </br>
@@ -40,10 +39,10 @@
             <thead class="thead-light">
                 <tr>
                     <th style="width: 20px;">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="customercheck">
+                        <!-- <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customercheck" value="all">
                             <label class="custom-control-label" for="customercheck">&nbsp;</label>
-                        </div>
+                        </div> -->
                     </th>
                     <th>学校ID</th>
                     <th>学校全称</th>
@@ -56,30 +55,25 @@
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="ques_id_{{ ques.ques_id }}">
-                                <label class="custom-control-label" for="ques_id_{{ ques.ques_id }}">&nbsp;</label>
+                                <input type="checkbox" class="custom-control-input" id="schl_id_{{ schl.school_id }}">
+                                <label class="custom-control-label" for="schl_id_{{ schl.school_id }}">&nbsp;</label>
                             </div>
                         </td>
                         <td>{{ schl.school_id }}</td>
                         <td>{{ schl.school_name }}</td>
                         <td>{{ schl.school_name_en }}</td>
                         <td>{{ schl.school_abbr }}</td>
-                        <!-- <td>
+                        <td>
                             <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
                             <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a>
-                        </td> -->
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
     <!-- end row -->
-
-
-
-
-{% endblock main %}
+{% endblock right_body %}
 
 <!-- JS -->
 {% block js %}

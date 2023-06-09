@@ -73,7 +73,7 @@ class StudentForm(ModelForm):
             'classroom': {'required': _("班级不能为空"), },
         }
 
-
+# “创建班级”填充表单
 class ClassroomForm(ModelForm):
     '''For user/class-manage.html & class-details.html'''
 
@@ -90,16 +90,51 @@ class ClassroomForm(ModelForm):
         model = user.models.Classroom
 
         fields = [
-            'teacher',
+            'school',
             'class_name',
+            'teacher',
             'class_desc',
+            'active',
+            'join_code',
+            'need_list',
         ]
 
         error_messages = {
-            'classroom': {'required': _("班级不能为空"), },
-            'teacher': {'required': _("负责教师不能为空"), },
+            'class_name': {'required': _("班级不能为空"), },
         }
 
         widgets = {
             'class_desc': Textarea(attrs={'rows': 8}),
+        }
+        
+# “创建学校”填充表单
+class SchoolForm(ModelForm):
+    '''For user/school-manage.html'''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # TODO(Steve X): style for `select2`
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'form-control input-mask select2'
+            })
+
+    class Meta:
+        model = user.models.School
+
+        fields = [
+            'school_name',
+            'school_name_en',
+            'school_abbr',
+        ]
+
+        error_messages = {
+            'school_name': {'required': _("学校全称不能为空"), },
+            'school_name_en': {'required': _("学校英文全称不能为空"), },
+            'school_abbr': {'required': _("学校英文缩写不能为空"), },
+        }
+
+        widgets = {
+            'school_abbr': Textarea(attrs={'rows': 8}),
         }
