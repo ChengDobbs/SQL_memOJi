@@ -25,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from django.db.models import Sum
 from user import models
+from user.models import Classroom, Student, User, StudentList
 from user import forms
 from coding.models import Exam, Exercise, Question, QuestionSet, ExerAnswerRec, ExamAnswerRec, ExamQuesAnswerRec, ExerQuesAnswerRec
 import datetime
@@ -301,6 +302,7 @@ class SchoolManage(View):
             if request.user.is_superuser:
 
                 school_list = models.School.objects.all()
+                school_form = forms.SchoolForm(auto_id='id_school_%s')
                 # school_id = forms.QuestionForm(auto_id='id_ques_%s')
                 # school_name = forms.PaperForm(auto_id='id_paper_%s')
                 # school_name_en = models.Question.objects.all()
@@ -309,6 +311,7 @@ class SchoolManage(View):
 
                 content = {
                     'school_list': school_list,
+                    'school_form': school_form,
                 }
                 return render(request, 'user/school-manage.html', context=content)
             else:
@@ -317,7 +320,6 @@ class SchoolManage(View):
                     'err_message': _('没有权限'),
                 }
         return render(request, 'error.html', context=content)
-
 
 class SchoolDetails(View):
     '''Render class-details template'''
@@ -389,6 +391,16 @@ class SchoolDetails(View):
             'err_message': _('没有权限'),
         }
         return render(request, 'error.html', context=content)
+    
+def SchoolAdd(request):
+    '''Add exercises in exams-manage page'''
+
+    school_form = forms.SchoolForm(request.POST)
+
+    if school_form.is_valid():
+        school_form.save()
+
+    return redirect('user:school-manage')
 
 #--------------------------------------Class Management Pages--------------------------------------#
 class ClassManage(View):
@@ -407,15 +419,18 @@ class ClassManage(View):
             if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
                 # XXX(Seddon Shen): 使用反向查询_set()去找学生 需注意全部字段小写
                 if request.user.is_superuser:
-                    class_list = Classroom.objects.all()
+                    class_list = models.Classroom.objects.all()
+                    class_form = forms.ClassroomForm(auto_id='id_school_%s')
                 else:
-                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
-
+                    class_list = models.Classroom.objects.filter(teacher=request.user.teacher)
+                    class_form = forms.ClassroomForm(auto_id='id_school_%s').objects.filter(teacher=request.user.teacher)
                 for cls in class_list:
                     print(cls)
                     print(cls.studentlist_set.all().count(  ))
                 content = {
                     'class_list': class_list,
+                    'class_form': class_form,
+
                 }
                 return render(request, 'user/class-manage.html', context=content)
             else:
@@ -425,6 +440,24 @@ class ClassManage(View):
                 }
                 return render(request, 'error.html', context=content)
 
+def ClassAdd(request):
+
+    class_form = forms.ClassroomForm(request.POST)
+
+    if class_form.is_valid():
+        class_form.save()
+
+    return redirect('user:class-manage')
+
+# TODO(Cheng): ClassEdit
+def ClassEdit(request):
+
+    class_form = forms.ClassroomForm(request.POST)
+
+    if class_form.is_valid():
+        class_form.save()
+
+    return redirect('user:class-manage')
 
 class ClassDetails(View):
     '''Render class-details template'''
@@ -497,8 +530,8 @@ class ClassDetails(View):
         }
         return render(request, 'error.html', context=content)
 
-#--------------------------------------Student Management Pages--------------------------------------#
-class StudentManage(View):
+#--------------------------------------Student Data Pages--------------------------------------#
+class ClassData(View):
     '''Render class-manage template'''
     def get(self, request):
         key = request.user.is_authenticated & request.user.is_superuser
@@ -524,7 +557,7 @@ class StudentManage(View):
                 content = {
                     'class_list': class_list,
                 }
-                return render(request, 'user/class-manage.html', context=content)
+                return render(request, 'user/class-data.html', context=content)
             else:
                 content = {
                     'err_code': '403',
@@ -604,8 +637,57 @@ class StudentDetails(View):
         }
         return render(request, 'error.html', context=content)
 
+#--------------------------------------Student Manage Pages--------------------------------------#
+class StudentManage(View):
+    '''Render student-manage template'''
+    def get(self, request):
+        key = request.user.is_authenticated & request.user.is_superuser
+        # print(request.user.is_authenticated)
+        if request.user.is_authenticated == False:
+            content = {
+                'err_code': '403',
+                'err_message': _('没有权限'),
+            }
+            return render(request, 'error.html', context=content)
+        else:
+            identity = request.user.identity()
+            if request.user.is_superuser or identity =='teacher' or identity == 'teacher_student':
+                
+                if request.user.is_superuser:
+                    class_list = Classroom.objects.all()
+                    student_list = StudentList.objects.all()
+                else:
+                    class_list = Classroom.objects.filter(teacher=request.user.teacher)
+                    
+                for cls in class_list:
+                    print(cls)
+                    print(cls.studentlist_set.all().count(  ))
+                
+                content = {
+                    'class_list': class_list,
+                    'student_list': student_list,
+                }
+                return render(request, 'user/student-manage.html', context=content)
+            else:
+                content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+                return render(request, 'error.html', context=content)
+
+def StudentAdd(request):
+    '''Add exercises in exams-manage page'''
+
+    school_form = forms.SchoolForm(request.POST)
+
+    if school_form.is_valid():
+        school_form.save()
+
+    return redirect('user:school-manage')
+
 #--------------------------------------Class Management Pages--------------------------------------#
 class UserManage(View):
+    # student_form = StudentForm(instance=user.student) if is_student else None
     '''Render class-manage template'''
     def get(self, request):
         key = request.user.is_authenticated & request.user.is_superuser
@@ -638,8 +720,6 @@ class UserManage(View):
                     'err_message': _('没有权限'),
                 }
                 return render(request, 'error.html', context=content)
-
-
 
 
 class UserDetails(View):

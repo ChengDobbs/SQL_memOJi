@@ -44,16 +44,25 @@ urlpatterns = [
 
     # School-management Pages
     path('school-manage/', views.SchoolManage.as_view(), name='school-manage'),
+    path('school-manage/school-add/', views.SchoolAdd, name='school-add'),
     path('school-details/<school_id>/', views.SchoolDetails.as_view(), name='school-details'),
-
 
     # Class-management Pages
     path('class-manage/', views.ClassManage.as_view(), name='class-manage'),
+    path('class-manage/class-add/', views.ClassAdd, name='class-add'),
+    path('class-manage/class-edit/', views.ClassEdit, name='class-edit'),
+    path('class-manage/class-edit/<class_id>/', views.ClassEdit, name='class-edit'),
+
     path('class-details/<class_id>/', views.ClassDetails.as_view(), name='class-details'),
     path('class-details/<class_id>/<event_type>/<event_id>', views.ClassEventDetails.as_view(), name='class-event'),
     
-    # Student-management Pages
+   # Student-management Pages
     path('student-manage/', views.StudentManage.as_view(), name='student-manage'),
+    path('student-manage/student-add/', views.StudentAdd, name='student-add'),
+    path('student-manage/student-edit/', views.StudentEdit, name='student-edit'),
+    
+    # statitics Pages
+    path('class-data/', views.ClassData.as_view(), name='class-data'),
     path('student-details/<student_id>/', views.StudentDetails.as_view(), name='student-details'),  
 
 

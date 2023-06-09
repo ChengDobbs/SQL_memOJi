@@ -79,7 +79,7 @@ def exer_add(request):
     if exer_form.is_valid():
         exer_form.save()
 
-    return redirect('coding:questions-manage')
+    return redirect('coding:exams-manage')
 
 #------------------------------------Questions Manage Page-----------------------------------#
 
@@ -106,7 +106,6 @@ def questions_manage_base(request):
 
     return render(request, 'coding/questions-manage-base.html', context=content)
 
-# XXX(Seddon Shen):need to modify the user control logic more
 def questions_manage(request):
     '''Render questions-manage template'''
 
@@ -134,6 +133,24 @@ def questions_manage(request):
 def question_add(request):
     '''Add question in questions-manage page'''
 
+    question_form = forms.QuestionForm(request.POST)
+
+    if question_form.is_valid():
+        question_form.save()
+
+    return redirect('coding:questions-manage')
+
+def question_remove(request):
+
+    question_form = forms.QuestionForm(request.POST)
+
+    if question_form.is_valid():
+        question_form.save()
+
+    return redirect('coding:questions-manage')
+
+def question_edit(request):
+    question_id = request.GET.get('question_id')
     question_form = forms.QuestionForm(request.POST)
 
     if question_form.is_valid():

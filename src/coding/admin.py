@@ -31,12 +31,16 @@ import pymysql
 # Fields: 'ques_id', 'ques_name', 'ques_set_id', 'ques_difficulty', 'ques_desc', 'ques_ans', 'initiator'
 @admin.register(models.Question)
 class QuestionAdmin(admin.ModelAdmin):
+    list_filter = ['ques_name', 'ques_difficulty', 'initiator', 'share']    
+    list_display = ['ques_id', 'ques_name', 'ques_set_id', 'ques_difficulty', 'ques_desc', 'ques_ans', 'initiator', 'share']
+    search_fields = ['ques_id', 'ques_name']
     def has_delete_permission(self, request,obj=None):
         if request.user.is_superuser:
             return True
         else:
             if obj:
                 if obj.initiator == request.user.teacher:
+                    # 当前教师用户为题目创建者
                     return True
                 else:
                     return False
@@ -93,14 +97,13 @@ class QuestionAdmin(admin.ModelAdmin):
                     kwargs['queryset'] = models.QuestionSet.objects.none()
         return super(QuestionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-    list_filter = ['ques_name', 'ques_difficulty', 'initiator', 'share']    
-    list_display = ['ques_id', 'ques_name', 'ques_set_id', 'ques_difficulty', 'ques_desc', 'ques_ans', 'initiator', 'share']
-    search_fields = ['ques_id', 'ques_name']
+
 
 # Fields: 'ques_set_id', 'ques_set_name', 'ques_set_desc', 'create_sql', 'initiator'
 @admin.register(models.QuestionSet)
 class QuestionSetAdmin(admin.ModelAdmin):
-
+    list_display = ['ques_set_id', 'ques_set_name', 'ques_set_desc', 'db_name', 'create_sql', 'initiator', 'share']
+    list_filter = ['ques_set_name', 'db_name', 'initiator', 'share']
     def has_delete_permission(self, request,obj=None):
         if request.user.is_superuser:
             return True
@@ -216,8 +219,7 @@ class QuestionSetAdmin(admin.ModelAdmin):
             cur.close()
             db.close()
 
-    list_display = ['ques_set_id', 'ques_set_name', 'ques_set_desc', 'db_name', 'create_sql', 'initiator', 'share']
-    list_filter = ['ques_set_name', 'db_name', 'initiator', 'share']
+
 
 
 # Fields: 'paper_id', 'paper_name', 'publish_time', 'paper_desc', 'initiator', 'question',
@@ -522,6 +524,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(models.ExamAnswerRec)
 class ExamAnswerRecAdmin(admin.ModelAdmin):
+    list_display = ['rec_id', 'student', 'exam', 'start_time', 'end_time', 'score', 'status', 'mark_status']
     list_filter = ['student', 'exam', 'status', 'mark_status','score']
     def has_delete_permission(self, request,obj=None):
         if request.user.is_superuser:
@@ -577,12 +580,13 @@ class ExamAnswerRecAdmin(admin.ModelAdmin):
                 return ['student', 'exam']
             else:
                 return []
-    list_display = ['rec_id', 'student', 'exam', 'start_time', 'end_time', 'score', 'status', 'mark_status']
+
 
 
 @admin.register(models.ExerAnswerRec)
 class ExerAnswerRecAdmin(admin.ModelAdmin):
-    list_filter = ['student', 'exer', 'status', 'mark_status','score']
+    list_display = ['rec_id', 'student', 'exer', 'start_time', 'end_time', 'score', 'status', 'mark_status']
+    list_filter = ['student', 'exer', 'status', 'mark_status','score']    
     def has_delete_permission(self, request,obj=None):
         if request.user.is_superuser:
             return True
@@ -638,11 +642,11 @@ class ExerAnswerRecAdmin(admin.ModelAdmin):
             else:
                 return []
 
-    list_display = ['rec_id', 'student', 'exer', 'start_time', 'end_time', 'score', 'status', 'mark_status']
 
 
 @admin.register(models.ExamQuesAnswerRec)
 class ExamQuesAnswerRecAdmin(admin.ModelAdmin):
+    list_display = ['rec_id', 'user', 'exam', 'question', 'ans', 'ans_status', 'submit_time', 'submit_cnt', 'score']
     list_filter = ['user', 'exam', 'question', 'ans_status','score']
     def has_delete_permission(self, request,obj=None):
         if request.user.is_superuser:
@@ -690,8 +694,6 @@ class ExamQuesAnswerRecAdmin(admin.ModelAdmin):
             return results.filter(user = request.user)
         else:
             return results.none()
-
-    list_display = ['rec_id', 'user', 'exam', 'question', 'ans', 'ans_status', 'submit_time', 'submit_cnt', 'score']
 
 @admin.register(models.ExerQuesAnswerRec)
 class ExerQuesAnswerRecAdmin(admin.ModelAdmin):
