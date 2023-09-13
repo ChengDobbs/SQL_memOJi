@@ -59,7 +59,7 @@ urlpatterns = [
    # Student-management Pages
     path('student-manage/', views.StudentManage.as_view(), name='student-manage'),
     path('student-manage/student-add/', views.StudentAdd, name='student-add'),
-    path('student-manage/student-edit/', views.StudentEdit, name='student-edit'),
+    # path('student-manage/student-edit/', views.StudentEdit, name='student-edit'),
     
     # statitics Pages
     path('class-data/', views.ClassData.as_view(), name='class-data'),

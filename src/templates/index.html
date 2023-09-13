@@ -284,7 +284,7 @@
                                     <td>{{exam.per_submit}}</td>
                                     <td>{{exam.wrong_count}}</td>
                                     <td>
-                                        <a href="{% url 'coding:paper-analysis' 'exam' exam.rec_id %}" class="mr-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看解析"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                        <a href="{% url 'coding:analysis' 'exam' exam.rec_id %}" class="mr-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看解析"><i class="mdi mdi-pencil font-size-18"></i></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -303,7 +303,7 @@
                                         <td>{{exer.per_submit}}</td>
                                         <td>{{exer.wrong_count}}</td>
                                         <td>
-                                            <a href="{% url 'coding:paper-analysis' 'exer' exer.rec_id %}" class="mr-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看解析"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                            <a href="{% url 'coding:analysis' 'exer' exer.rec_id %}" class="mr-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看解析"><i class="mdi mdi-pencil font-size-18"></i></a>
                                         </td>
                                     </tr>
                                 {% endfor %}

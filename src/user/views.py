@@ -34,6 +34,7 @@ from django.http import HttpResponse,HttpResponseRedirect,HttpResponseForbidden
 import json
 from django.urls import reverse
 
+
 # Create your views here.
 
 
@@ -738,7 +739,7 @@ class UserDetails(View):
         school = user.school if user.is_authenticated else not_login
         college_name = user.college_name if user.is_authenticated else not_login
         internal_id = user.internal_id if user.is_authenticated else not_login
-        classroom = user.student.classroom if is_student else False
+        # classroom = user.student.classroom if is_student else False
         priority = user.get_priority_display() if user.is_authenticated else not_login
         join_status = user.is_authenticated and user.join_status != User.JoinStatus.OUT_OF_LIST or user.is_superuser
         # info_form = UserInfoForm(instance=user) if user.is_authenticated else None
@@ -751,7 +752,7 @@ class UserDetails(View):
             'school': school,
             'college_name': college_name,
             'internal_id': internal_id,
-            'classroom': classroom,
+            # 'classroom': classroom,
             'priority': priority,
             'join_status': join_status,
             'join_status_display': _('认证') if join_status else _('未认证'),

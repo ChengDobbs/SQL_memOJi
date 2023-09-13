@@ -1,0 +1,111 @@
+{% extends 'coding/questions-manage-base.html' %}
+{% block title %}题库编辑{% endblock title %}
+{% block page_title %}题库编辑{% endblock page_title %}
+
+<!-- Breadcrumb -->
+{% block breadcrumb %}
+<div class="page-title-right">
+    <ol class="breadcrumb m-0">
+        <li class="breadcrumb-item"><a href="{% url 'coding:ques-set-manage' %}">题库管理</a></li>
+        <li class="breadcrumb-item active"><a href="javascript: void(0);">题库编辑</a></li>
+    </ol>
+</div>
+{% endblock breadcrumb %}
+
+<!-- CSS -->
+{% block css %}
+<!-- DataTables -->
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+
+<!-- Form Advanced Styles -->
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet"
+    type="text/css" />
+
+<!-- Plugins css -->
+<link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
+<!-- Main Content -->
+
+{% block right_body %}
+<div class="" id="edit_ques_set_modal" tabindex="-1" aria-labelledby="quessetmodalTitle">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+
+
+        <form method="POST" class="needs-validation" action="{% url 'coding:ques-set-edit' ques_set.ques_set_id %}"
+            novalidate>
+            {% csrf_token %}
+            <div class="table-responsive" style="margin-top: 20px;">
+                <div class="modal-content" style="padding: 20px;">
+                    <button type="button" style="width:fit-content" class="btn btn-secondary"
+                        onclick="location='../../'"><i class="ri-logout-box-line"></i> 返回</button>
+                    <br>
+                    <div class="row ">
+                        {% for data in ques_set_form %}
+                        {% if data.name == 'ques_set_desc' or data.name == 'create_sql' %}
+                        <div class="form-group mb-4 col-12">
+                            <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                            <div>{{ data }}</div>
+                        </div>
+                        {% elif data.name == 'share'%}
+                        
+                        <div class="form-group mb-4 col-6">
+                            <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                            <div class="custom-control custom-checkbox">{{ data }}</div>
+                        </div>
+                        {% else %}
+                        <div class="form-group mb-4 col-6">
+                            <label for="{{ data.id_for_label}} ">{{ data.label }}</label>
+                            <div>{{ data }}</div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-success waves-effect waves-light"
+                        style="justify-content: center">保存<i class="fab fa-telegram-plane ml-1"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock right_body %}
+
+<!-- JS -->
+{% block js %}
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+<!-- Form Validation -->
+<script src="{% static 'js/pages/form-validation.init.js' %}"></script>
+
+<!-- Plugins js -->
+<script src="{% static 'libs/dropzone/min/dropzone.min.js' %}"></script>
+
+<!-- Form Advanced -->
+<script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+<!-- form mask -->
+<script src="{% static 'libs/inputmask/jquery.inputmask.min.js' %}"></script>
+
+<!-- form mask init -->
+<script src="{% static 'js/pages/form-mask.init.js' %}"></script>
+
+<!-- Custom Pages -->
+<script src="{% static 'js/custom-pages/questions-manage.js' %}"></script>
+<script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+{% endblock js %}

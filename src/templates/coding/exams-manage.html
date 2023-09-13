@@ -17,7 +17,12 @@
     <!-- Form Advanced Styles -->
     <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" type="text/css" />
-
+    <style type="text/css">
+        .datepicker
+        {
+            z-index: 1060 !important;
+        }
+    </style>
 {% endblock css %}
 
 <!-- Main Content -->
@@ -315,5 +320,9 @@
 
     <!-- Custom Pages -->
     <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
-
+    
+    <script>
+        $(document).ready(function() {
+            $( "#datepicker" ).z-index( "option", "disabled", true );
+        });
 {% endblock js %}
