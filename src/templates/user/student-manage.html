@@ -32,25 +32,34 @@
 
 {% block right_body %}
     <div class="table-responsive" style="margin-top: 20px;">
-        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#student_add">
-            <a class="mdi mdi-plus mr-2"></a>添加学生
+        <div class="actions">
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#student_manual_add">
+            <a class="mdi mdi-plus mr-2"></a>手动添加学生
         </button>
-        <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#download-unjoined-students">
+        <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#student_batch_add">
+            <a class="mdi mdi-plus mr-2"></a>批量添加学生
+        </button>
+        <!-- <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#download-unjoined-students">
             <a class="mdi mdi-plus mr-2"></a>导出未加入学生列表
-        </button>
-        <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#delete-selected-student">
-            <a class="mdi mdi-minus mr-2"></a>删除选定学生
+        </button> -->
+        <button type="button" class="btn btn-danger mb-2" id="delete_selected_button" data-toggle="modal" 
+            data-target="#delete-selected-student" disabled>
+            <i class="mdi mdi-minus mr-2"></i>删除选定学生
         </button>
         <br>
         <br>
-        <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <table class="table table-centered datatable dt-responsive nowrap " id="result_list"
+        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             <thead class="thead-light">
                 <tr>
-                    <th style="width: 20px;">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="customercheck">
-                            <label class="custom-control-label" for="customercheck">&nbsp;</label>
+                    <th style="width: 20px;" scope="col" class="action-checkbox-column">
+                        <div class="btn custom-control custom-checkbox">
+                            <span>
+                            <input type="checkbox" id="action-toggle" class="custom-control-input">
+                            <label for="action-toggle" class="custom-control-label">&nbsp;</label>
+                            </span>
                         </div>
+                        <div class="clear"></div>
                     </th>
                     <th>学生ID</th>
                     <th>姓名</th>
@@ -59,7 +68,7 @@
                     <th>班级识别码</th>
                     <!-- <th>试卷总分</th> -->
                     <th>加入状态</th>
-                    <th style="width: 120px;">操作</th>
+                    <th >操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,7 +76,7 @@
                     <tr>
                         <td>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="student_id_{{ std.record_id }}">
+                                <input type="checkbox" class="custom-control-input action-select " id="student_id_{{ std.record_id }}">
                                 <label class="custom-control-label" for="student_id_{{ std.record_id }}">&nbsp;</label>
                             </div>
                         </td>
@@ -88,9 +97,10 @@
                 {% endfor %}
             </tbody>
             
-        </table>
+            </table>
+        </div>
     </div>
-{% endblock right_body %} right side content
+{% endblock right_body %}
 
 
 
@@ -123,4 +133,6 @@
     <!-- Custom Pages -->
     <script src="{% static 'js/custom-pages/questions-manage.js' %}"></script>
     <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+    <script src="{% static 'js/custom-pages/actions.js' %}"></script>
+    <script src="{% static 'js/custom-pages/filters.js' %}"></script>
 {% endblock js %}

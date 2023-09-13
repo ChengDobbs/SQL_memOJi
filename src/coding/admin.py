@@ -31,7 +31,7 @@ import pymysql
 # Fields: 'ques_id', 'ques_name', 'ques_set_id', 'ques_difficulty', 'ques_desc', 'ques_ans', 'initiator'
 @admin.register(models.Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_filter = ['ques_name', 'ques_difficulty', 'initiator', 'share']    
+    list_filter = ['ques_name', 'ques_difficulty', 'initiator', 'share']
     list_display = ['ques_id', 'ques_name', 'ques_set_id', 'ques_difficulty', 'ques_desc', 'ques_ans', 'initiator', 'share']
     search_fields = ['ques_id', 'ques_name']
     def has_delete_permission(self, request,obj=None):

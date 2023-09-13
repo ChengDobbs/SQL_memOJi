@@ -2239,7 +2239,7 @@ input[switch="dark"]:checked + label {
 .datepicker {
   border: 1px solid #212529;
   padding: 8px;
-  z-index: 999 !important; }
+  z-index: 1060 !important; }
   .datepicker table tr th {
     font-weight: 500; }
   .datepicker table tr td.active, .datepicker table tr td.active:hover, .datepicker table tr td .active.disabled, .datepicker table tr td.active.disabled:hover, .datepicker table tr td.today, .datepicker table tr td.today:hover, .datepicker table tr td.today.disabled, .datepicker table tr td.today.disabled:hover, .datepicker table tr td.selected, .datepicker table tr td.selected:hover, .datepicker table tr td.selected.disabled, .datepicker table tr td.selected.disabled:hover {

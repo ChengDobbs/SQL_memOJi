@@ -117,7 +117,7 @@
                             {% if user.is_authenticated %}
                                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img class="rounded-circle header-profile-user" src="{{user.avatar }}"
+                                    <img class="rounded-circle header-profile-user" src="{{ user.avatar }}"
                                         alt="User Avatar">
 
                                         
@@ -163,7 +163,7 @@
                     <!--- Sidemenu -->
                     <div id="sidebar-menu">
                         <!-- Left Menu Start -->
-                        <ul class="metismenu list-unstyled" id="side-menu">
+                        <ul class="metismenu list-unstyled side-menu" id="side-menu">
                             <li class="menu-title">个人中心</li>
                             {% if user.is_superuser %}
                             <li>
@@ -193,7 +193,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'coding:coding' %}" class=" waves-effect">
+                                <a href="{% url 'coding:index' %}" class=" waves-effect">
                                     <i class="ri-terminal-box-line"></i>
                                     <span>答题</span>
                                 </a>

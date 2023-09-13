@@ -32,9 +32,9 @@ Including another URLconf
 
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views import static
-from django.urls import path
+# from django.conf.urls import url # removed in Django 4.0+. Use re_path() instead
 import user.urls
 import iCalendar.urls
 import coding.urls
@@ -43,7 +43,12 @@ from . import settings
 
 
 urlpatterns = [
-    # url('^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+    # Django<4.0
+    # path('^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+
+    # Django>=4.0
+    re_path('^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+
     path('admin/', admin.site.urls),
 
     path('', include(user.urls)),

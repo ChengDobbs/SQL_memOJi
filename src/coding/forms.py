@@ -50,6 +50,7 @@ class QuesSetForm(ModelForm):
             'ques_set_desc',
             'db_name',
             'create_sql',
+            'share',
         ]
 
         error_messages = {
@@ -89,6 +90,7 @@ class QuestionForm(ModelForm):
             'ques_difficulty',
             'ques_desc',
             'ques_ans',
+            'share',
         ]
 
         error_messages = {
@@ -131,7 +133,7 @@ class PaperForm(ModelForm):
             'paper_name',
             'initiator',
             'paper_desc',
-            'question',
+            'share',
         ]
 
         error_messages = {
@@ -142,6 +144,7 @@ class PaperForm(ModelForm):
             'initiator': wid.Select(attrs={'class': 'select2'}),
             'question': wid.SelectMultiple(attrs={'class': 'select2'}),
             'paper_desc': wid.Textarea(attrs={'rows': 3}),
+            'share': wid.CheckboxInput(attrs={'class': 'select'}),
         }
 
 # “发起考试”填充表单
@@ -178,7 +181,7 @@ class ExamForm(ModelForm):
             # 'xxx': {'required': _("xxx不能为空"), },
         }
 
-        # FIXME(Steve X): datetime picker above modal CHANGE(Cheng):datepicker.dropdown-menu
+        # TODO(Steve X): datetime picker above modal z-index=999 problem
         widgets = {
             'paper': wid.Select(attrs={'class': 'select2'}),
             'classroom': wid.SelectMultiple(attrs={'class': 'select2'}),
@@ -190,6 +193,7 @@ class ExamForm(ModelForm):
             'end_time': wid.DateTimeInput(attrs={
                 'type': 'datetime',
                 'data-provide': 'datepicker',
+                
             }),
 
             # 'start_time': CustomDateInput(attrs={

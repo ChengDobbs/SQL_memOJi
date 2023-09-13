@@ -4,113 +4,187 @@
 
 <!-- Breadcrumb -->
 {% block breadcrumb %}
-    <div class="page-title-right">
-        <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'coding:ques-set-manage' %}">题库管理</a></li>
-        </ol>
-    </div>
+<div class="page-title-right">
+    <ol class="breadcrumb m-0">
+        <li class="breadcrumb-item"><a href="javascript: void(0);">管理员</a></li>
+        <li class="breadcrumb-item active"><a href="{% url 'coding:ques-set-manage' %}">题库管理</a></li>
+    </ol>
+</div>
 {% endblock breadcrumb %}
 
 <!-- CSS -->
 {% block css %}
-    <!-- DataTables -->
-    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- DataTables -->
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<link rel="stylesheet" href="{% static 'css/changelists.css' %}">
 
-    <!-- Responsive datatable examples -->
-    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
 
-    <!-- Form Advanced Styles -->
-    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Form Advanced Styles -->
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet"
+    type="text/css" />
 
-    <!-- Plugins css -->
-    <link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Plugins css -->
+<link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock css %}
 
 
 <!-- Main Content -->
 
 {% block right_body %}
-    <div class="table-responsive" style="margin-top: 20px;">
+<div class="table-responsive changelist-form" style="margin-top: 20px;">
+    <div class="actions">
         <button type="button" class="btn btn-success mb-2" data-toggle="modal" data-target="#questionsetmodal">
             <a class="mdi mdi-plus mr-2"></a>新建题库
         </button>
+        <button type="button" class="btn btn-danger mb-2" data-toggle="modal" id="delete_selected_button"
+            data-target="#delete_selected_ques_sets" disabled>
+            <i class="mdi mdi-minus mr-2"></i>删除选定的题库
+        </button>
         <br>
         <br>
-        <table class="table table-centered datatable dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-            <thead class="thead-light">
-                <tr>
-                    <th style="width: 20px;">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="customercheck">
-                            <label class="custom-control-label" for="customercheck">&nbsp;</label>
+        <div class="modal fade" id="delete_selected_ques_sets" tabindex="-1" role="dialog"
+            aria-labelledby="delete_selected_ques_sets" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paperTitle"><a class="mdi mdi-minus mr-2"></a>删除选定的题库</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="mdi mdi-alert-outline mr-2"></i>
+                            删除题库将会删除该题库关联的所有题目
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </th>
-                    <th>题库ID</th>
-                    <th>题库名称</th>
-                    <th>题库描述</th>
-                    <th>数据库名称</th>
-                    <th>发起人</th>
-                    <th>其他老师能否查看</th>
-                    <th style="width: 120px;">编辑</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ques in ques_set_list %}
-                    <tr>
-                        <td>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="ques_set_id_{{ ques.ques_set_id }}">
-                                <label class="custom-control-label" for="ques_set_id_{{ ques.ques_set_id }}">&nbsp;</label>
+                        <div class="alert alert-warning alert-dismissible show" role="alert">
+                            <i class="mdi mdi-alert-outline mr-2"></i>当前已选中
+                            <code><span class="action-counter"></span></code> 个题库，请确认删除！
+                        </div>
+                        <div class="table-responsive " style="margin-top: 20px;">
+                            <table class="table table-centered dt-responsive ">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 20%;">题号</th>
+                                        <th>描述</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selected_deleted_array_display">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" action="{% url 'coding:ques-set-delete' %}" class="needs-validation">
+                            {% csrf_token %}
+                            <div>
+                                <div id="delete_selected_list"></div>
+                                <input type="submit" class="btn btn-danger" value="确认删除">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                             </div>
-                        </td>
-                        <td>{{ ques.ques_set_id }}</td>
-                        <td>{{ ques.ques_set_name }}</td>
-                        <td style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_set_desc }}</td>
-                        <td>{{ ques.db_name }}</td>
-                        <td>{{ ques.initiator }}</td>
-                        <td>
-                            <div class="badge badge-soft-info font-size-12" align="center">{{ ques.share }}</div>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0);" data-target="#question-edit-modal" class="mr-3 text-primary" data-toggle="modal" data-placement="top" title="" data-original-title="编辑"><i class="mdi mdi-pencil font-size-18"></i></a>
-                            <!-- <a href="javascript:void(0);" class="text-danger" data-toggle="modal" data-placement="top" title="" data-original-title="删除"><i class="mdi mdi-trash-can font-size-18"></i></a> -->
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <table class="table table-centered datatable dt-responsive nowrap " id="result_list"
+        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead class="thead-light">
+            <tr>
+                <th style="width: 20px;" scope="col" class="action-checkbox-column">
+                    <div class="btn custom-control custom-checkbox">
+                        <span>
+                            <input type="checkbox" id="action-toggle" class="custom-control-input">
+                            <label for="action-toggle" class="custom-control-label">&nbsp;</label>
+                        </span>
+                    </div>
+                    <div class="clear"></div>
+                </th>
+                <th>题库ID</th>
+                <th>题库名称</th>
+                <th>题库描述</th>
+                <th>数据库名称</th>
+                <th>发起人</th>
+                <th>其他老师能否查看</th>
+                <th style="width: 120px;">编辑</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ques in ques_set_list %}
+            <tr>
+                <td class="action-checkbox custom-control custom-checkbox">
+                    
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" name="_selected_action" value="{{ ques.ques_set_id }}"
+                            class="action-select custom-control-input" id="ques_set_id_{{ ques.ques_set_id }}">
+                        <label class="custom-control-label" for="ques_set_id_{{ ques.ques_set_id }}"></label>
+                    </div>
+                </td>
+                <td class="field-ques_set_id">
+                    <a href="edit/{{ ques.ques_set_id }}">{{ ques.ques_set_id }}
+                        </a>
+                    </td>
+                <td class="field-ques_set_name">{{ ques.ques_set_name }}</td>
+                <td class="field-ques_set_desc" style="text-overflow: ellipsis; overflow: hidden; max-width: 150px;">{{ ques.ques_set_desc }}</td>
+                <td class="field-db_name">{{ ques.db_name }}</td>
+                <td class="field-create_sql nowrap">{{ ques.initiator }}</td>
+                <td class="field-share">
+                    <div class="badge badge-soft-info font-size-12" align="center">{{ ques.share }}</div>
+                </td>
+                
+                <td>
+                    <a href="edit/{{ ques.ques_set_id }}" class="mr-3 text-primary data-placement="top" title="" data-original-title="编辑">
+                        <i class="mdi mdi-pencil font-size-18"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock right_body %} <!-- right side content -->
 
 <!-- JS -->
 {% block js %}
-    <!-- Required datatable js -->
-    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<!-- selected -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
 
-    <!-- Responsive examples -->
-    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 
-    <!-- Form Validation -->
-    <script src="{% static 'js/pages/form-validation.init.js' %}"></script>
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
 
-    <!-- Plugins js -->
-    <script src="{% static 'libs/dropzone/min/dropzone.min.js' %}"></script>
+<!-- Form Validation -->
+<script src="{% static 'js/pages/form-validation.init.js' %}"></script>
 
-    <!-- Form Advanced -->
-    <script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
-    <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+<!-- Plugins js -->
+<script src="{% static 'libs/dropzone/min/dropzone.min.js' %}"></script>
 
-    <!-- form mask -->
-    <script src="{% static 'libs/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Form Advanced -->
+<script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
 
-    <!-- form mask init -->
-    <script src="{% static 'js/pages/form-mask.init.js' %}"></script>
+<!-- form mask -->
+<script src="{% static 'libs/inputmask/jquery.inputmask.min.js' %}"></script>
 
-    <!-- Custom Pages -->
-    <script src="{% static 'js/custom-pages/questions-manage.js' %}"></script>
-    <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+<!-- form mask init -->
+<script src="{% static 'js/pages/form-mask.init.js' %}"></script>
+
+<!-- Custom Pages -->
+<script src="{% static 'js/custom-pages/questions-manage.js' %}"></script>
+<script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+<script src="{% static 'js/custom-pages/actions.js' %}"></script>
+<script src="{% static 'js/custom-pages/filters.js' %}"></script>
 {% endblock js %}

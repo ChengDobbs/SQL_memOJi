@@ -23,19 +23,21 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect  
 from django.urls import Resolver404, reverse
 from django.views import View
-from django.contrib import auth
+from django.contrib import auth, admin
+from django.contrib.admin.actions import delete_selected
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from django.db.models import Sum
 from prettytable import PrettyTable
-from coding import forms
-from coding import models
+from coding import forms, models
 from utils import token as tk
 from utils import sql_check
 from django.db.models import Q
 from django.utils import timezone
 from django.db.models import Avg
+from django.template.defaulttags import register
 from .tasks import sql_check_celery
+
 # Create your views here.
 
 
@@ -87,7 +89,7 @@ def exer_add(request):
 def questions_manage_base(request):
     '''Render questions-manage-base template'''
 
-    ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
+    ques_set_form = forms.QuesSetForm()
     question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
 
@@ -109,26 +111,26 @@ def questions_manage_base(request):
 def questions_manage(request):
     '''Render questions-manage template'''
 
-    ques_set_form = forms.QuesSetForm(auto_id='id_qset_%s')
     question_form = forms.QuestionForm(auto_id='id_ques_%s')
     paper_form = forms.PaperForm(auto_id='id_paper_%s')
     question_list = models.Question.objects.all()
-    ques_set_list = models.QuestionSet.objects.all()
     paper_list = models.Paper.objects.all()
 
     questions_cnt = models.Question.objects.all().count()
 
     content = {
-        'ques_set_form': ques_set_form,
         'question_form': question_form,
         'paper_form': paper_form,
         'question_list': question_list,
-        'ques_set_list': ques_set_list,
         'paper_list': paper_list,
         'questions_cnt': questions_cnt
     }
 
     return render(request, 'coding/questions-manage.html', context=content)
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 def question_add(request):
     '''Add question in questions-manage page'''
@@ -140,23 +142,44 @@ def question_add(request):
 
     return redirect('coding:questions-manage')
 
-def question_remove(request):
+def question_delete(request):
+    cur_user = request.user
+    identity = request.user.identity()
+    delete_selected_str = request.POST.getlist('delete_selected_confirm')
+    delete_selected_int = list(map(int, delete_selected_str))
 
-    question_form = forms.QuestionForm(request.POST)
+    if request.user.is_superuser or identity == 'teacher' or identity == 'teacher_student':
+        try:
+            for idx in delete_selected_int:
+                question = models.Question.objects.get(ques_id = idx)
+                question.delete()
+            return redirect('coding:questions-manage')
+        except Exception as exc:
+            content = {
+                'err_code': '403',
+                'err_message': _('没有权限'),
+            }
+            return render(request, 'error.html', context=content)   
+    else:
+        content = {
+            'err_code': '403',
+            'err_message': _('没有权限'),
+        }
+        return render(request, 'error.html', context=content)
 
-    if question_form.is_valid():
-        question_form.save()
-
-    return redirect('coding:questions-manage')
-
-def question_edit(request):
-    question_id = request.GET.get('question_id')
-    question_form = forms.QuestionForm(request.POST)
-
-    if question_form.is_valid():
-        question_form.save()
-
-    return redirect('coding:questions-manage')
+def question_edit(request, question_id):
+    question = models.Question.objects.get(ques_id = question_id)
+    question_form = forms.QuestionForm(instance=question)
+    content = {
+        'question': question,
+        'question_form': question_form,
+    }
+    question_form_modified = forms.QuestionForm(request.POST, instance=question)
+    if question_form_modified.is_valid():
+        question_form_modified.save()
+        return redirect('coding:questions-manage')
+    else: 
+        return render(request, 'coding/question-edit.html', context=content)
 
 def ques_set_manage(request):
     '''Render questions-manage template'''
@@ -189,6 +212,7 @@ def ques_set_add(request):
     user = tk.get_conf('mysql', 'user')
     passwd = tk.get_conf('mysql', 'password')
 
+
     db = pymysql.Connect(host=host, port=port, user=user, passwd=passwd)
     cur = db.cursor()
     qset_db_name = f'qset_{request.POST.get("db_name")}'
@@ -199,22 +223,23 @@ def ques_set_add(request):
     # print(type(create_sql))
     # print('-'*40)
     # print(create_sql_list)
+    # print(qset_db_name)
 
     try:
-        cur.execute(f"""create database {qset_db_name};""")
-        cur.execute(f"""use {qset_db_name};""")
-
+        cur.execute(f"""create database {qset_db_name}""")
+        cur.execute(f"""use {qset_db_name}""")
         for sql in create_sql_list:
-            cur.execute(sql)
+            if sql != '':
+                cur.execute(sql)
 
         db.commit()
         if ques_set_form.is_valid():
             ques_set_form.save()
 
         # FIXME(Steve X): db_name 重名问题
-        qset = models.QuestionSet.objects.get(db_name=ques_set_form.cleaned_data.get('db_name'))
-        qset.db_name = qset_db_name
-        qset.save()
+        # qset = models.QuestionSet.objects.get(db_name=ques_set_form.cleaned_data.get('db_name'))
+        # qset.db_name = qset_db_name
+        # qset.save()
     except Exception as exc:
         cur.execute(f"""drop database if exists {qset_db_name}""")
         db.rollback()
@@ -225,6 +250,61 @@ def ques_set_add(request):
 
     return redirect('coding:ques-set-manage')
 
+def ques_set_delete(request):
+    
+    host = tk.get_conf('mysql', 'host')
+    port = int(tk.get_conf('mysql', 'port'))
+    user = tk.get_conf('mysql', 'user')
+    passwd = tk.get_conf('mysql', 'password')
+    db = pymysql.Connect(host=host, port=port, user=user, passwd=passwd)
+    
+    cur_user = request.user
+    identity = request.user.identity()
+    # print(identity)
+
+    delete_selected_str = request.POST.getlist('delete_selected_confirm')
+    delete_selected_int = list(map(int, delete_selected_str))
+    
+    if cur_user.is_superuser or identity == 'teacher' or identity == 'teacher_student':
+        for idx in delete_selected_int:
+            try:
+                cur = db.cursor()
+                ques_set = models.QuestionSet.objects.get(ques_set_id = idx)
+                qset_db_name = f'qset_{ques_set.db_name}'
+                cur.execute(f"""drop database if exists qset_{ques_set.db_name}""")
+                db.commit()
+                ques_set.delete()
+            except Exception as exc:
+                db.rollback()
+                content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+            cur.close()
+        db.close()
+        return redirect('coding:ques-set-manage')
+    else:
+        content = {
+                    'err_code': '403',
+                    'err_message': _('没有权限'),
+                }
+        db.close()
+        return render(request, 'error.html', context=content)   
+
+def ques_set_edit(request, ques_set_id):
+
+    ques_set = models.QuestionSet.objects.get(ques_set_id = ques_set_id)
+    ques_set_form = forms.QuesSetForm(instance=ques_set)
+    content = {
+        'ques_set': ques_set,
+        'ques_set_form': ques_set_form,
+    }
+    ques_set_form_modified = forms.QuesSetForm(request.POST, instance=ques_set)
+    if ques_set_form_modified.is_valid():
+        ques_set_form_modified.save()
+        return redirect('coding:ques-set-manage')
+    else: 
+        return render(request, 'coding/ques-set-edit.html', context=content)
 
 # FIXME(Steve X): date time picker
 
@@ -239,6 +319,13 @@ def papers_manage(request):
     return render(request, 'coding/papers-manage.html', context=content)
 
 def paper_add(request):
+    class PaperQuestionInline(admin.TabularInline):
+        model = models.PaperQuestion
+        autocomplete_fields = ['question']    
+    inlines = [
+        PaperQuestionInline
+    ]
+    
     '''Add paper in questions-manage page'''
     paper_form = forms.PaperForm(request.POST)
 
@@ -266,11 +353,13 @@ def coding(request):
     unfinished = exams_list.exclude(exam_id__in=have_finished_exam_id)
     have_finished = models.Exam.objects.order_by('publish_time').filter(exam_id__in=have_finished_exam_id)
     next_exam = unfinished.first()
+    record = models.ExamQuesAnswerRec.objects.filter(user=request.user)
     content = {
         'exams_list': unfinished,
         'finished' : have_finished,
         'exer_list': exer_list,
         'next_exam': next_exam,
+        'rec'      : record
     }
 
     return render(request, 'coding/coding.html', context=content)
@@ -607,7 +696,7 @@ class CodingEditor(View):
             now_paperquestion = models.PaperQuestion.objects.get(Q(question=question) & Q(paper=event.paper))
             if rec:
                 rec.ans_status = ans_status
-                rec.submit_cnt += 1
+                rec.submit_cnt += 1 # 可能出现提交次数重复统计的情况
                 rec.ans = submit_ans
                 rec.score = 0
                 rec.save()
