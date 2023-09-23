@@ -131,7 +131,7 @@
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <!-- item-->
                                     <a class="dropdown-item" href="{% url 'user:user-info' %}"><i class="ri-user-line align-middle mr-1"></i> 个人信息</a>
-                                    <a class="dropdown-item" href="/admin/password_change/"><i class="ri-lock-unlock-line align-middle mr-1"></i> 修改密码</a>
+                                    <a class="dropdown-item" href="{% url 'user:auth-changepw' %}"><i class="ri-lock-unlock-line align-middle mr-1"></i> 修改密码</a>
                                     <a class="dropdown-item right-bar-toggle"><i class="ri-settings-2-line align-middle mr-1"></i> 样式设置</a>
                                     {%if user.canview %}
                                     <a class="dropdown-item" href="/admin"><i class="ri-list-check align-middle mr-1"></i> 后台管理</a>

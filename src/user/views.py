@@ -180,7 +180,6 @@ class AuthLogin(View):
             'user': user,
             'msg': msg,
         }
-
         if not success:
             return render(request, 'user/auth-login.html', context=content, status=401)
 
@@ -208,8 +207,52 @@ def auth_status(request):
 
 def auth_recoverpw(request):
     '''Render auth-recoverpw template'''
-
+    
     return render(request, 'user/auth-recoverpw.html')
+
+class ChangePassword(View):
+    '''Render auth-changepw template'''
+    def get(self, request):
+        return render(request, 'user/auth-changepw.html')
+    
+    def post(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            # print("未登录")
+            return redirect('/auth-login')
+        user_obj = User.objects.get(username=user.username)
+        print(user_obj)
+        old_password = request.POST.get('old_password')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        msg = ''
+        if not user_obj.check_password(old_password):
+            content = {
+                'user': user,
+                'msg': _('原密码错误'),
+            }
+            return render(request, 'user/auth-changepw.html', context=content)
+        elif password1 != password2:
+            content = {
+                'user': user,
+                'msg': _('两次密码输入不一致'),
+            }
+            return render(request, 'user/auth-changepw.html', context=content)
+        elif password1 == old_password:
+            content = {
+                'user': user,
+                'msg': _('新密码不能与原密码相同'),
+            }
+            return render(request, 'user/auth-changepw.html', context=content)
+        else:
+            user_obj.set_password(password1)
+            user_obj.save()
+            content = {
+                'user': user,
+                'msg': _('密码修改成功'),
+            }
+            auth.logout(request)
+        return render(request, 'user/auth-login.html', context=content)
 
 
 class AuthRegister(View):

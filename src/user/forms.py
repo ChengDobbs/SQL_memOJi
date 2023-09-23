@@ -19,6 +19,7 @@
 
 
 from django.forms import ModelForm, Textarea
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
 import user.models
 
